@@ -9,12 +9,13 @@ async function run(): Promise<void> {
     const outDir = core.getInput('out_dir');
     const publishType = core.getInput('publish_type') as PublishType;
     const packageName = core.getInput('package_name');
+    const destinationDir = core.getInput('destination_dir');
 
     if (!Object.values(PublishType).includes(publishType)) {
       throw new Error(`Invalid input for publish_type. Valid inputs are : ${Object.values(PublishType).join(', ')}`);
     }
 
-    createPackages(outDir, publishType, packageName);
+    createPackages(outDir, publishType, packageName, destinationDir);
     core.setOutput('passed', true);
   } catch (e) {
     const error = e as Error;

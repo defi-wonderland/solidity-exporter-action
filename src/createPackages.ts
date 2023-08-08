@@ -3,9 +3,14 @@ import { createPackage } from './createPackage';
 import { PublishType, ethersDependencies, web3Dependencies } from './constants';
 import { execSync } from 'child_process';
 
-export const createPackages = (outDir: string, publishType: PublishType, packageName: string) => {
+export const createPackages = (
+  outDir: string,
+  publishType: PublishType,
+  packageName: string,
+  destinationDir: string,
+) => {
   // Empty export directory
-  fse.emptyDirSync(packageName);
+  fse.emptyDirSync(destinationDir);
 
   console.log('Installing dependencies');
   execSync('yarn');
@@ -31,5 +36,5 @@ export const createPackages = (outDir: string, publishType: PublishType, package
   };
 
   // Create package
-  createPackage(packageName, outDir, packageJson, publishType);
+  createPackage(destinationDir, outDir, packageJson, publishType);
 };

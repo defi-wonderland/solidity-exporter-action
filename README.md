@@ -8,11 +8,12 @@ This action generates npm packages based on Solidity contract interfaces. It aut
 
 ## Action Inputs
 
-| Input        | Description                        | Default      | Options                 |
-| ------------ | ---------------------------------- | ------------ | ----------------------- |
-| out_dir      | The path where contracts are build | **Required** |                         |
-| publish_type | The option to publish              | **Required** | abi, ethers-v6, web3-v1 |
-| package_name | The name of the package            | **Required** |                         |
+| Input           | Description                                      | Default      | Options                 |
+| --------------- | ------------------------------------------------ | ------------ | ----------------------- |
+| out_dir         | The path where contracts are build               | **Required** |                         |
+| publish_type    | The option to publish                            | **Required** | abi, ethers-v6, web3-v1 |
+| package_name    | The name of the package                          | **Required** |                         |
+| destination_dir | The path to the directory where will be exported | **Required** |                         |
 
 ## Action Outputs
 
@@ -33,6 +34,7 @@ Publish an NPM package with your interfaces ABIs:
     out_dir: ./out
     publish_type: abi
     package_name: @my-cool-protocol/core-interfaces-abi
+    destination_dir: my-cool-protocol
 ```
 
 Publish an NPM package with a typechain generated files for ethers compatibility from your interfaces.
@@ -44,6 +46,7 @@ Publish an NPM package with a typechain generated files for ethers compatibility
     out_dir: ./out
     publish_type: ethers-v6
     package_name: @my-cool-protocol/core-interfaces-ethers
+    destination_dir: my-cool-protocol
 ```
 
 Publish an NPM package with a typechain generated files for web3 compatibility from your interfaces.
@@ -55,6 +58,7 @@ Publish an NPM package with a typechain generated files for web3 compatibility f
     out_dir: ./out
     publish_type: web3-v1
     package_name: @my-cool-protocol/core-interfaces-web3
+    destination_dir: my-cool-protocol
 ```
 
 # Development

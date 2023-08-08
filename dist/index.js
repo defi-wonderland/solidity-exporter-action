@@ -79,16 +79,6 @@ const createPackage = (exportDir, outDir, packageJson, publishType) => {
             console.log(`Generating types for ${publishType}`);
             (0, child_process_1.execSync)(`yarn typechain --target ${publishType} --out-dir ${exportDir}/${publishType} '${exportDir}/abi/*.json'`);
         }
-        // publish package
-        try {
-            console.log(`Publishing abi dependencies`);
-            (0, child_process_1.execSync)(`cd ${exportDir} && yarn publish --access public`, { stdio: 'inherit' });
-            console.log('Package successfully published.');
-        }
-        catch (error) {
-            console.error('Failed to publish the package:', error);
-            process.exit(1);
-        }
     });
 };
 exports.createPackage = createPackage;
@@ -110,9 +100,9 @@ const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const createPackage_1 = __nccwpck_require__(3393);
 const constants_1 = __nccwpck_require__(5105);
 const child_process_1 = __nccwpck_require__(2081);
-const createPackages = (outDir, publishType, packageName) => {
+const createPackages = (outDir, publishType, packageName, destinationDir) => {
     // Empty export directory
-    fs_extra_1.default.emptyDirSync(packageName);
+    fs_extra_1.default.emptyDirSync(destinationDir);
     console.log('Installing dependencies');
     (0, child_process_1.execSync)('yarn');
     // Create custom package.json in the export directory
@@ -132,7 +122,7 @@ const createPackages = (outDir, publishType, packageName) => {
         dependencies: Object.assign(Object.assign({}, wholePackage.dependencies), additionalDependencies),
     };
     // Create package
-    (0, createPackage_1.createPackage)(packageName, outDir, packageJson, publishType);
+    (0, createPackage_1.createPackage)(destinationDir, outDir, packageJson, publishType);
 };
 exports.createPackages = createPackages;
 
@@ -230,10 +220,11 @@ function run() {
             const outDir = core.getInput('out_dir');
             const publishType = core.getInput('publish_type');
             const packageName = core.getInput('package_name');
+            const destinationDir = core.getInput('destination_dir');
             if (!Object.values(constants_1.PublishType).includes(publishType)) {
                 throw new Error(`Invalid input for publish_type. Valid inputs are : ${Object.values(constants_1.PublishType).join(', ')}`);
             }
-            (0, createPackages_1.createPackages)(outDir, publishType, packageName);
+            (0, createPackages_1.createPackages)(outDir, publishType, packageName, destinationDir);
             core.setOutput('passed', true);
         }
         catch (e) {

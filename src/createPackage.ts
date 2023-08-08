@@ -55,15 +55,5 @@ export const createPackage = (
         `yarn typechain --target ${publishType} --out-dir ${exportDir}/${publishType} '${exportDir}/abi/*.json'`,
       );
     }
-
-    // publish package
-    try {
-      console.log(`Publishing abi dependencies`);
-      execSync(`cd ${exportDir} && yarn publish --access public`, { stdio: 'inherit' });
-      console.log('Package successfully published.');
-    } catch (error) {
-      console.error('Failed to publish the package:', error);
-      process.exit(1);
-    }
   });
 };

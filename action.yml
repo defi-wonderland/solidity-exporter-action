@@ -11,6 +11,9 @@ inputs:
   package_name:
     description: 'name of the package to be publish'
     required: true
+  destination_dir:
+    description: 'path to the directory where your package will be exported'
+    required: true
 outputs:
   passed:
     description: 'boolean describing if the test passed or not'
