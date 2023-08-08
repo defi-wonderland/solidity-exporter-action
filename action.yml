@@ -11,14 +11,9 @@ inputs:
   package_name:
     description: 'name of the package to be publish'
     required: true
-  npm_token:
-    description: 'token used for publish the package'
-    required: true
 outputs:
   passed:
     description: 'boolean describing if the test passed or not'
-env:
-  NODE_AUTH_TOKEN: ${{ inputs.npm_token }}
 runs:
   using: 'node16'
   main: 'dist/index.js'
