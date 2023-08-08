@@ -1,0 +1,21 @@
+name: 'Interface exporter action'
+description: 'An action to generate npm packages based on Solidity contract interfaces'
+author: 'Wonderland'
+inputs:
+  out_dir:
+    description: 'path to the `out` folder containing the compiled contracts'
+    required: true
+  publish_type:
+    description: 'interface compatibility: abi, ethers-v6, web3-v1'
+    required: true
+  package_name:
+    description: 'name of the package to be publish'
+    required: true
+outputs:
+  passed:
+    description: 'boolean describing if the test passed or not'
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
