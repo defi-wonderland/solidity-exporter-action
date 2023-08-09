@@ -4,13 +4,11 @@ export const ethersDependencies = {
   '@ethersproject/providers': '5.7.2',
   'bn.js': '5.2.1',
   ethers: '6.0.3',
-  typechain: '8.2.0',
 };
 
 export const web3Dependencies = {
   'bn.js': '5.2.1',
   'web3-core': '1.9.0',
-  typechain: '8.2.0',
 };
 
 export enum PublishType {
