@@ -22,7 +22,7 @@ export const createPackage = (
   fse.emptyDirSync(exportDir);
   fse.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
 
-  createReadmeAndLicense(packageJson.name, exportDir);
+  createReadmeAndLicense(packageJson.name, publishType, exportDir);
 
   // list all of the solidity interfaces
   glob(interfacesGlob, (err, interfacePaths) => {

@@ -54,7 +54,7 @@ const createPackage = (exportDir, outDir, packageJson, publishType) => {
     // empty export directory
     fs_extra_1.default.emptyDirSync(exportDir);
     fs_extra_1.default.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
-    (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportDir);
+    (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, publishType, exportDir);
     // list all of the solidity interfaces
     (0, glob_1.default)(interfacesGlob, (err, interfacePaths) => {
         if (err)
@@ -140,24 +140,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createReadmeAndLicense = void 0;
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
-const createReadmeAndLicense = (packageName, exportDir) => {
+const types_1 = __nccwpck_require__(8164);
+const createReadmeAndLicense = (packageName, publishType, exportDir) => {
     const readmeContent = `
-  ## ${packageName}
-  This package includes all of the needed resources in order to integrate ${packageName} into your scripts, UI, or smart-contracts:
+  # ${packageName}
 
+  ${packageName} offers ${types_1.publicTypeLabels[publishType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
+  
   ## Installation
-  You can install this package via npm or yarn:
   
-  \`\`\`console
+  You can easily install this package using either npm or yarn:
+  
+  Using Yarn:
+  \`\`\`sh
   yarn add ${packageName}
-  \`
+  \`\`\`
   
-  \`\`\`console
+  Using npm:
+  \`\`\`sh
   npm install ${packageName}
-  \`
+  \`\`\`
   
   ## License
-  The primary license for ${packageName} is MIT, see [\`LICENSE\`](./LICENSE).`;
+  
+  ${packageName} is licensed under the [MIT License](LICENSE).
+
+  `;
     const licensePath = './LICENSE';
     if (fs_extra_1.default.existsSync(licensePath)) {
         fs_extra_1.default.copySync(licensePath, `${exportDir}/LICENSE`);
@@ -302,6 +310,23 @@ const transformRemappings = (file) => {
         .join('\n');
 };
 exports.transformRemappings = transformRemappings;
+
+
+/***/ }),
+
+/***/ 8164:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.publicTypeLabels = void 0;
+const constants_1 = __nccwpck_require__(5105);
+exports.publicTypeLabels = {
+    [constants_1.PublishType.ABI]: 'ABI',
+    [constants_1.PublishType.ETHERS_V6]: 'Ethers.js',
+    [constants_1.PublishType.WEB3_V1]: 'Web3',
+};
 
 
 /***/ }),

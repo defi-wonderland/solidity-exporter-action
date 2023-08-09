@@ -1,23 +1,32 @@
 import fse from 'fs-extra';
+import { PublishType } from './constants';
+import { publicTypeLabels } from './types';
 
-export const createReadmeAndLicense = (packageName: string, exportDir: string) => {
+export const createReadmeAndLicense = (packageName: string, publishType: PublishType, exportDir: string) => {
   const readmeContent = `
-  ## ${packageName}
-  This package includes all of the needed resources in order to integrate ${packageName} into your scripts, UI, or smart-contracts:
+  # ${packageName}
 
+  ${packageName} offers ${publicTypeLabels[publishType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
+  
   ## Installation
-  You can install this package via npm or yarn:
   
-  \`\`\`console
+  You can easily install this package using either npm or yarn:
+  
+  Using Yarn:
+  \`\`\`sh
   yarn add ${packageName}
-  \`
+  \`\`\`
   
-  \`\`\`console
+  Using npm:
+  \`\`\`sh
   npm install ${packageName}
-  \`
+  \`\`\`
   
   ## License
-  The primary license for ${packageName} is MIT, see [\`LICENSE\`](./LICENSE).`;
+  
+  ${packageName} is licensed under the [MIT License](LICENSE).
+
+  `;
 
   const licensePath = './LICENSE';
   if (fse.existsSync(licensePath)) {
