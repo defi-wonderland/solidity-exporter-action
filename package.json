@@ -38,7 +38,7 @@
     "@types/mock-fs": "4.13.1",
     "@types/node": "18.11.19",
     "@typescript-eslint/eslint-plugin": "6.3.0",
-    "@typescript-eslint/parser": "6.2.0",
+    "@typescript-eslint/parser": "6.4.0",
     "@vercel/ncc": "0.36.1",
     "chai": "4.3.7",
     "eslint": "8.45.0",
