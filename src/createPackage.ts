@@ -5,14 +5,9 @@ import { execSync } from 'child_process';
 import { PackageJson } from './types';
 import { createReadmeAndLicense } from './createReadmeAndLicense';
 import { transformRemappings } from './transformRemappings';
-import { PublishType } from './constants';
+import { TypingType } from './constants';
 
-export const createPackage = (
-  exportDir: string,
-  outDir: string,
-  packageJson: PackageJson,
-  publishType: PublishType,
-) => {
+export const createPackage = (exportDir: string, outDir: string, packageJson: PackageJson, typingType: TypingType) => {
   const abiDir = `${exportDir}/abi`;
   const contractsDir = `${exportDir}/contracts`;
   const interfacesDir = './solidity/interfaces';
@@ -22,7 +17,7 @@ export const createPackage = (
   fse.emptyDirSync(exportDir);
   fse.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
 
-  createReadmeAndLicense(packageJson.name, publishType, exportDir);
+  createReadmeAndLicense(packageJson.name, typingType, exportDir);
 
   // list all of the solidity interfaces
   glob(interfacesGlob, (err, interfacePaths) => {
@@ -49,11 +44,9 @@ export const createPackage = (
     execSync(`cd ${exportDir} && yarn`);
 
     // use typechain if needed
-    if (publishType === PublishType.ETHERS_V6 || publishType === PublishType.WEB3_V1) {
-      console.log(`Generating types for ${publishType}`);
-      execSync(
-        `yarn typechain --target ${publishType} --out-dir ${exportDir}/${publishType} '${exportDir}/abi/*.json'`,
-      );
+    if (typingType === TypingType.ETHERS_V6 || typingType === TypingType.WEB3_V1) {
+      console.log(`Generating types for ${typingType}`);
+      execSync(`yarn typechain --target ${typingType} --out-dir ${exportDir}/${typingType} '${exportDir}/abi/*.json'`);
     }
   });
 };

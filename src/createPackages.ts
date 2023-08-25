@@ -1,14 +1,9 @@
 import fse from 'fs-extra';
 import { createPackage } from './createPackage';
-import { PublishType, ethersDependencies, web3Dependencies } from './constants';
+import { TypingType, ethersDependencies, web3Dependencies } from './constants';
 import { execSync } from 'child_process';
 
-export const createPackages = (
-  outDir: string,
-  publishType: PublishType,
-  packageName: string,
-  destinationDir: string,
-) => {
+export const createPackages = (outDir: string, typingType: TypingType, packageName: string, destinationDir: string) => {
   // Empty export directory
   fse.emptyDirSync(destinationDir);
 
@@ -23,8 +18,8 @@ export const createPackages = (
 
   // Add additional dependencies if needed
   let additionalDependencies: Record<string, string> = {};
-  if (publishType === PublishType.ETHERS_V6) additionalDependencies = ethersDependencies;
-  if (publishType === PublishType.WEB3_V1) additionalDependencies = web3Dependencies;
+  if (typingType === TypingType.ETHERS_V6) additionalDependencies = ethersDependencies;
+  if (typingType === TypingType.WEB3_V1) additionalDependencies = web3Dependencies;
 
   const packageJson = {
     name: packageName,
@@ -36,5 +31,5 @@ export const createPackages = (
   };
 
   // Create package
-  createPackage(destinationDir, outDir, packageJson, publishType);
+  createPackage(destinationDir, outDir, packageJson, typingType);
 };

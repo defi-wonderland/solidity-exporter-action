@@ -11,7 +11,7 @@ export const web3Dependencies = {
   'web3-core': '1.9.0',
 };
 
-export enum PublishType {
+export enum TypingType {
   ABI = 'abi',
   ETHERS_V6 = 'ethers-v6',
   WEB3_V1 = 'web3-v1',

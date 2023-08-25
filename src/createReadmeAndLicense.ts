@@ -1,12 +1,12 @@
 import fse from 'fs-extra';
-import { PublishType } from './constants';
+import { TypingType } from './constants';
 import { publicTypeLabels } from './types';
 
-export const createReadmeAndLicense = (packageName: string, publishType: PublishType, exportDir: string) => {
+export const createReadmeAndLicense = (packageName: string, typingType: TypingType, exportDir: string) => {
   const readmeContent = `
   # ${packageName}
 
-  ${packageName} offers ${publicTypeLabels[publishType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
+  ${packageName} offers ${publicTypeLabels[typingType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
   
   ## Installation
   

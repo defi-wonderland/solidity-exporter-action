@@ -7,7 +7,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PublishType = exports.web3Dependencies = exports.ethersDependencies = void 0;
+exports.TypingType = exports.web3Dependencies = exports.ethersDependencies = void 0;
 /* eslint-disable prettier/prettier */
 exports.ethersDependencies = {
     '@ethersproject/abi': '5.7.0',
@@ -19,12 +19,12 @@ exports.web3Dependencies = {
     'bn.js': '5.2.1',
     'web3-core': '1.9.0',
 };
-var PublishType;
-(function (PublishType) {
-    PublishType["ABI"] = "abi";
-    PublishType["ETHERS_V6"] = "ethers-v6";
-    PublishType["WEB3_V1"] = "web3-v1";
-})(PublishType = exports.PublishType || (exports.PublishType = {}));
+var TypingType;
+(function (TypingType) {
+    TypingType["ABI"] = "abi";
+    TypingType["ETHERS_V6"] = "ethers-v6";
+    TypingType["WEB3_V1"] = "web3-v1";
+})(TypingType = exports.TypingType || (exports.TypingType = {}));
 
 
 /***/ }),
@@ -46,7 +46,7 @@ const child_process_1 = __nccwpck_require__(2081);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const transformRemappings_1 = __nccwpck_require__(7616);
 const constants_1 = __nccwpck_require__(5105);
-const createPackage = (exportDir, outDir, packageJson, publishType) => {
+const createPackage = (exportDir, outDir, packageJson, typingType) => {
     const abiDir = `${exportDir}/abi`;
     const contractsDir = `${exportDir}/contracts`;
     const interfacesDir = './solidity/interfaces';
@@ -54,7 +54,7 @@ const createPackage = (exportDir, outDir, packageJson, publishType) => {
     // empty export directory
     fs_extra_1.default.emptyDirSync(exportDir);
     fs_extra_1.default.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
-    (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, publishType, exportDir);
+    (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, typingType, exportDir);
     // list all of the solidity interfaces
     (0, glob_1.default)(interfacesGlob, (err, interfacePaths) => {
         if (err)
@@ -75,9 +75,9 @@ const createPackage = (exportDir, outDir, packageJson, publishType) => {
         console.log(`Installing abi dependencies`);
         (0, child_process_1.execSync)(`cd ${exportDir} && yarn`);
         // use typechain if needed
-        if (publishType === constants_1.PublishType.ETHERS_V6 || publishType === constants_1.PublishType.WEB3_V1) {
-            console.log(`Generating types for ${publishType}`);
-            (0, child_process_1.execSync)(`yarn typechain --target ${publishType} --out-dir ${exportDir}/${publishType} '${exportDir}/abi/*.json'`);
+        if (typingType === constants_1.TypingType.ETHERS_V6 || typingType === constants_1.TypingType.WEB3_V1) {
+            console.log(`Generating types for ${typingType}`);
+            (0, child_process_1.execSync)(`yarn typechain --target ${typingType} --out-dir ${exportDir}/${typingType} '${exportDir}/abi/*.json'`);
         }
     });
 };
@@ -100,7 +100,7 @@ const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const createPackage_1 = __nccwpck_require__(3393);
 const constants_1 = __nccwpck_require__(5105);
 const child_process_1 = __nccwpck_require__(2081);
-const createPackages = (outDir, publishType, packageName, destinationDir) => {
+const createPackages = (outDir, typingType, packageName, destinationDir) => {
     // Empty export directory
     fs_extra_1.default.emptyDirSync(destinationDir);
     console.log('Installing dependencies');
@@ -112,9 +112,9 @@ const createPackages = (outDir, publishType, packageName, destinationDir) => {
         return;
     // Add additional dependencies if needed
     let additionalDependencies = {};
-    if (publishType === constants_1.PublishType.ETHERS_V6)
+    if (typingType === constants_1.TypingType.ETHERS_V6)
         additionalDependencies = constants_1.ethersDependencies;
-    if (publishType === constants_1.PublishType.WEB3_V1)
+    if (typingType === constants_1.TypingType.WEB3_V1)
         additionalDependencies = constants_1.web3Dependencies;
     const packageJson = {
         name: packageName,
@@ -122,7 +122,7 @@ const createPackages = (outDir, publishType, packageName, destinationDir) => {
         dependencies: Object.assign(Object.assign({}, wholePackage.dependencies), additionalDependencies),
     };
     // Create package
-    (0, createPackage_1.createPackage)(destinationDir, outDir, packageJson, publishType);
+    (0, createPackage_1.createPackage)(destinationDir, outDir, packageJson, typingType);
 };
 exports.createPackages = createPackages;
 
@@ -141,11 +141,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createReadmeAndLicense = void 0;
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const types_1 = __nccwpck_require__(8164);
-const createReadmeAndLicense = (packageName, publishType, exportDir) => {
+const createReadmeAndLicense = (packageName, typingType, exportDir) => {
     const readmeContent = `
   # ${packageName}
 
-  ${packageName} offers ${types_1.publicTypeLabels[publishType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
+  ${packageName} offers ${types_1.publicTypeLabels[typingType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
   
   ## Installation
   
@@ -226,13 +226,13 @@ function run() {
         try {
             core.debug(`Parsing inputs`);
             const outDir = core.getInput('out_dir');
-            const publishType = core.getInput('publish_type');
+            const typingType = core.getInput('typing_type');
             const packageName = core.getInput('package_name');
             const destinationDir = core.getInput('destination_dir');
-            if (!Object.values(constants_1.PublishType).includes(publishType)) {
-                throw new Error(`Invalid input for publish_type. Valid inputs are : ${Object.values(constants_1.PublishType).join(', ')}`);
+            if (!Object.values(constants_1.TypingType).includes(typingType)) {
+                throw new Error(`Invalid input for typing_type. Valid inputs are : ${Object.values(constants_1.TypingType).join(', ')}`);
             }
-            (0, createPackages_1.createPackages)(outDir, publishType, packageName, destinationDir);
+            (0, createPackages_1.createPackages)(outDir, typingType, packageName, destinationDir);
             core.setOutput('passed', true);
         }
         catch (e) {
@@ -323,9 +323,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.publicTypeLabels = void 0;
 const constants_1 = __nccwpck_require__(5105);
 exports.publicTypeLabels = {
-    [constants_1.PublishType.ABI]: 'ABI',
-    [constants_1.PublishType.ETHERS_V6]: 'Ethers.js',
-    [constants_1.PublishType.WEB3_V1]: 'Web3',
+    [constants_1.TypingType.ABI]: 'ABI',
+    [constants_1.TypingType.ETHERS_V6]: 'Ethers.js',
+    [constants_1.TypingType.WEB3_V1]: 'Web3',
 };
 
 

@@ -1,4 +1,4 @@
-import { PublishType } from './constants';
+import { TypingType } from './constants';
 
 export interface PackageJson {
   name: string;
@@ -6,8 +6,8 @@ export interface PackageJson {
   dependencies: Record<string, string>;
 }
 
-export const publicTypeLabels: Record<PublishType, string> = {
-  [PublishType.ABI]: 'ABI',
-  [PublishType.ETHERS_V6]: 'Ethers.js',
-  [PublishType.WEB3_V1]: 'Web3',
+export const publicTypeLabels: Record<TypingType, string> = {
+  [TypingType.ABI]: 'ABI',
+  [TypingType.ETHERS_V6]: 'Ethers.js',
+  [TypingType.WEB3_V1]: 'Web3',
 };
