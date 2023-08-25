@@ -3,7 +3,13 @@ import { createPackage } from './createPackage';
 import { TypingType, ethersDependencies, web3Dependencies } from './constants';
 import { execSync } from 'child_process';
 
-export const createPackages = (outDir: string, typingType: TypingType, packageName: string, destinationDir: string) => {
+export const createPackages = (
+  outDir: string,
+  typingType: TypingType,
+  packageName: string,
+  destinationDir: string,
+  interfacesDir: string,
+) => {
   // Empty export directory
   fse.emptyDirSync(destinationDir);
 
@@ -31,5 +37,5 @@ export const createPackages = (outDir: string, typingType: TypingType, packageNa
   };
 
   // Create package
-  createPackage(destinationDir, outDir, packageJson, typingType);
+  createPackage(destinationDir, outDir, interfacesDir, packageJson, typingType);
 };

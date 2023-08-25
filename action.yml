@@ -5,7 +5,11 @@ inputs:
   out_dir:
     description: 'path to the `out` folder containing the compiled contracts'
     required: true
-  typing_type:
+  interfaces_dir:
+    description: 'path to the `interfaces` folder containing the contract interfaces'
+    default: 'src/interfaces'
+    required: false
+  publish_type:
     description: 'interface compatibility: abi, ethers-v6, web3-v1'
     required: true
   package_name:

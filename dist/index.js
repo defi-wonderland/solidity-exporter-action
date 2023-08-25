@@ -46,10 +46,9 @@ const child_process_1 = __nccwpck_require__(2081);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const transformRemappings_1 = __nccwpck_require__(7616);
 const constants_1 = __nccwpck_require__(5105);
-const createPackage = (exportDir, outDir, packageJson, typingType) => {
+const createPackage = (exportDir, outDir, interfacesDir, packageJson, typingType) => {
     const abiDir = `${exportDir}/abi`;
     const contractsDir = `${exportDir}/contracts`;
-    const interfacesDir = './solidity/interfaces';
     const interfacesGlob = `${interfacesDir}/**/*.sol`;
     // empty export directory
     fs_extra_1.default.emptyDirSync(exportDir);
@@ -100,7 +99,7 @@ const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const createPackage_1 = __nccwpck_require__(3393);
 const constants_1 = __nccwpck_require__(5105);
 const child_process_1 = __nccwpck_require__(2081);
-const createPackages = (outDir, typingType, packageName, destinationDir) => {
+const createPackages = (outDir, typingType, packageName, destinationDir, interfacesDir) => {
     // Empty export directory
     fs_extra_1.default.emptyDirSync(destinationDir);
     console.log('Installing dependencies');
@@ -122,7 +121,7 @@ const createPackages = (outDir, typingType, packageName, destinationDir) => {
         dependencies: Object.assign(Object.assign({}, wholePackage.dependencies), additionalDependencies),
     };
     // Create package
-    (0, createPackage_1.createPackage)(destinationDir, outDir, packageJson, typingType);
+    (0, createPackage_1.createPackage)(destinationDir, outDir, interfacesDir, packageJson, typingType);
 };
 exports.createPackages = createPackages;
 
@@ -229,10 +228,11 @@ function run() {
             const typingType = core.getInput('typing_type');
             const packageName = core.getInput('package_name');
             const destinationDir = core.getInput('destination_dir');
+            const interfacesDir = core.getInput('interfaces_dir');
             if (!Object.values(constants_1.TypingType).includes(typingType)) {
                 throw new Error(`Invalid input for typing_type. Valid inputs are : ${Object.values(constants_1.TypingType).join(', ')}`);
             }
-            (0, createPackages_1.createPackages)(outDir, typingType, packageName, destinationDir);
+            (0, createPackages_1.createPackages)(outDir, typingType, packageName, destinationDir, interfacesDir);
             core.setOutput('passed', true);
         }
         catch (e) {

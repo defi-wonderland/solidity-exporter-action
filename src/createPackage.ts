@@ -7,10 +7,15 @@ import { createReadmeAndLicense } from './createReadmeAndLicense';
 import { transformRemappings } from './transformRemappings';
 import { TypingType } from './constants';
 
-export const createPackage = (exportDir: string, outDir: string, packageJson: PackageJson, typingType: TypingType) => {
+export const createPackage = (
+  exportDir: string,
+  outDir: string,
+  interfacesDir: string,
+  packageJson: PackageJson,
+  typingType: TypingType,
+) => {
   const abiDir = `${exportDir}/abi`;
   const contractsDir = `${exportDir}/contracts`;
-  const interfacesDir = './solidity/interfaces';
   const interfacesGlob = `${interfacesDir}/**/*.sol`;
 
   // empty export directory

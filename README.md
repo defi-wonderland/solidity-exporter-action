@@ -4,16 +4,17 @@
 
 # Interface Exporter Action
 
-Interface Exporter Action automates the process of extracting TypeScript interfaces from Solidity contracts and provides compatibility with TypeChain. The action allows users generating a NPM package compatible with web3-v1 or ethers-v6 typings. Developers can seamlessly generate typings with only a few lines of yaml code.
+Interface Exporter Action automates the process of extracting TypeScript interfaces from Solidity contracts and provides compatibility with TypeChain. The action allows users to generate an NPM package compatible with web3-v1 or ethers-v6 typings. Developers can seamlessly generate typings with only a few lines of yaml code.
 
 ## Action Inputs
 
-| Input           | Description                                                          | Options                 |
-| --------------- | -------------------------------------------------------------------- | ----------------------- |
-| out_dir         | The path to the directory where contracts are built                  |                         |
-| typing_type     | Typing option which NPM package will be compatible                   | abi, ethers-v6, web3-v1 |
-| package_name    | Choosen name for the exported NPM package                            |                         |
-| destination_dir | The path to the destination directory where the NPM will be exported |                         |
+| Input           | Description                                                          | Default        | Options                 |
+| --------------- | -------------------------------------------------------------------- | -------------- | ----------------------- |
+| out_dir         | The path to the directory where contracts are built                  | **Required**   |                         |
+| interfaces_dir  | The path to the directory where the interfaces are located           | src/interfaces |                         |
+| typing_type     | Typing option which NPM package will be compatible                   | **Required**   | abi, ethers-v6, web3-v1 |
+| package_name    | Choosen name for the exported NPM package                            | **Required**   |                         |
+| destination_dir | The path to the destination directory where the NPM will be exported | **Required**   |                         |
 
 ## Action Outputs
 
@@ -25,7 +26,7 @@ Interface Exporter Action automates the process of extracting TypeScript interfa
 
 ## Example
 
-Interface Exporter Action generates a NPM package with your interfaces ABIs:
+Interface Exporter Action generates an NPM package with your interfaces ABIs:
 
 ```yaml
 - name: Use Node.js
@@ -44,6 +45,7 @@ Interface Exporter Action generates a NPM package with your interfaces ABIs:
   uses: defi-wonderland/interface-exporter-action@v1
   with:
     out_dir: ./out
+    interfaces_dir: src/interfaces
     typing_type: abi
     package_name: @my-cool-protocol/core-interfaces-abi
     destination_dir: abi-project
@@ -54,7 +56,7 @@ Interface Exporter Action generates a NPM package with your interfaces ABIs:
     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
 
-Interface Exporter Action generates a NPM package with typechain which has compatibility with ethers-v6. Also, the Action provides ABIs interfaces.
+Interface Exporter Action generates an NPM package with typechain which has compatibility with ethers-v6. Also, the Action provides ABIs interfaces.
 
 ```yaml
 - name: Use Node.js
@@ -75,7 +77,8 @@ Interface Exporter Action generates a NPM package with typechain which has compa
 - name: Export interfaces for ethers compatibility
   uses: defi-wonderland/interface-exporter-action@v1
   with:
-    out_dir: ./out
+    out_dir: out
+    interfaces_dir: src/interfaces
     typing_type: ethers-v6
     package_name: @my-cool-protocol/core-interfaces-ethers
     destination_dir: ethers-project
@@ -86,7 +89,7 @@ Interface Exporter Action generates a NPM package with typechain which has compa
     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
 
-Interface Exporter Action generates a NPM package with typechain which has compatibility with web3. Also, the Action provides ABIs interfaces.
+Interface Exporter Action generates an NPM package with typechain which has compatibility with web3. Also, the Action provides ABIs interfaces.
 
 ```yaml
 - name: Use Node.js
@@ -108,6 +111,7 @@ Interface Exporter Action generates a NPM package with typechain which has compa
   uses: defi-wonderland/interface-exporter-action@v1
   with:
     out_dir: ./out
+    interfaces_dir: src/interfaces
     typing_type: web3-v1
     package_name: @my-cool-protocol/core-interfaces-web3
     destination_dir: web3-project
