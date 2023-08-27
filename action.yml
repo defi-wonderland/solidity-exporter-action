@@ -9,7 +9,7 @@ inputs:
     description: 'path to the `interfaces` folder containing the contract interfaces'
     default: 'src/interfaces'
     required: false
-  publish_type:
+  typing_type:
     description: 'interface compatibility: abi, ethers-v6, web3-v1'
     required: true
   package_name:
