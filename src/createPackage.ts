@@ -11,12 +11,15 @@ export const createPackage = (
   exportDir: string,
   outDir: string,
   interfacesDir: string,
+  contractsExportDir: string,
   packageJson: PackageJson,
   typingType: TypingType,
 ) => {
   const abiDir = `${exportDir}/abi`;
   const contractsDir = `${exportDir}/contracts`;
+  
   const interfacesGlob = `${interfacesDir}/**/*.sol`;
+  const contractsGlob = `${contractsExportDir}/**/*.sol`;
 
   // empty export directory
   fse.emptyDirSync(exportDir);
@@ -43,6 +46,24 @@ export const createPackage = (
       fse.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDir}/${interfaceName}.json`);
     }
     console.log(`Copied ${interfacePaths.length} interfaces`);
+
+    if (typingType === TypingType.CONTRACTS) {
+      glob(contractsGlob, (err, contractPaths) => {
+        if (err) throw err;
+      
+        for (const contractPath of contractPaths) {
+          const contractFile = fse.readFileSync(contractPath, 'utf8');
+          const relativeContractFile = transformRemappings(contractFile);
+
+          const relativeContractPath = contractPath.substring(contractsExportDir.length + 1);
+          fse.outputFileSync(path.join(exportDir, relativeContractPath), relativeContractFile);
+
+          const contractName = contractPath.substring(contractPath.lastIndexOf('/') + 1, contractPath.lastIndexOf('.'));
+          fse.copySync(`${outDir}/${contractName}.sol/${contractName}.json`, `${abiDir}/${contractName}.json`);
+        }
+        console.log(`Copied ${contractPaths.length} contracts`);
+      });
+    }
 
     // install package dependencies
     console.log(`Installing abi dependencies`);

@@ -15,4 +15,5 @@ export enum TypingType {
   ABI = 'abi',
   ETHERS_V6 = 'ethers-v6',
   WEB3_V1 = 'web3-v1',
+  CONTRACTS = 'contracts',
 }

@@ -11,12 +11,13 @@ async function run(): Promise<void> {
     const packageName = core.getInput('package_name');
     const destinationDir = core.getInput('destination_dir');
     const interfacesDir = core.getInput('interfaces_dir');
+    const contractsDir = core.getInput('contracts_dir') || '';
 
     if (!Object.values(TypingType).includes(typingType)) {
-      throw new Error(`Invalid input for typing_type. Valid inputs are : ${Object.values(TypingType).join(', ')}`);
+      throw new Error(`Invalid input for typing_type. Valid inputs are: ${Object.values(TypingType).join(', ')}`);
     }
 
-    createPackages(outDir, typingType, packageName, destinationDir, interfacesDir);
+    createPackages(outDir, typingType, packageName, destinationDir, interfacesDir, contractsDir);
     core.setOutput('passed', true);
   } catch (e) {
     const error = e as Error;

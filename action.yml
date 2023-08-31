@@ -10,7 +10,7 @@ inputs:
     default: 'src/interfaces'
     required: false
   typing_type:
-    description: 'interface compatibility: abi, ethers-v6, web3-v1'
+    description: 'interface compatibility: abi, ethers-v6, web3-v1, contracts'
     required: true
   package_name:
     description: 'name of the package to be publish'
@@ -18,6 +18,9 @@ inputs:
   destination_dir:
     description: 'path to the directory where your package will be exported'
     required: true
+  contracts_dir:
+    description: 'path to the directory where the contracts are located'
+    required: false
 outputs:
   passed:
     description: 'boolean describing if the test passed or not'

@@ -8,13 +8,14 @@ Interface Exporter Action automates the process of extracting TypeScript interfa
 
 ## Action Inputs
 
-| Input           | Description                                                          | Default        | Options                 |
-| --------------- | -------------------------------------------------------------------- | -------------- | ----------------------- |
-| out_dir         | The path to the directory where contracts are built                  | **Required**   |                         |
-| interfaces_dir  | The path to the directory where the interfaces are located           | src/interfaces |                         |
-| typing_type     | Typing option which NPM package will be compatible                   | **Required**   | abi, ethers-v6, web3-v1 |
-| package_name    | Choosen name for the exported NPM package                            | **Required**   |                         |
-| destination_dir | The path to the destination directory where the NPM will be exported | **Required**   |                         |
+| Input           | Description                                                           | Default        | Options                            |
+| --------------- | --------------------------------------------------------------------- | -------------- | -----------------------            |
+| out_dir         | The path to the directory where contracts are built                   | **Required**   |                                    |
+| interfaces_dir  | The path to the directory where the interfaces are located            | src/interfaces |                                    |
+| typing_type     | Typing option which NPM package will be compatible                    | **Required**   | abi, ethers-v6, web3-v1, contracts |
+| package_name    | Chosen name for the exported NPM package                              | **Required**   |                                    |
+| destination_dir | The path to the destination directory where the NPM will be exported  | **Required**   |                                    |
+| contracts_dir   | The path to the directory where the contracts are located             | **Optional**   |                                    |
 
 ## Action Outputs
 
@@ -118,6 +119,35 @@ Interface Exporter Action generates an NPM package with typechain which has comp
 
 - name: Publish
   run: cd web3-project && npm publish --access public
+  env:
+    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+```
+
+```yaml
+- name: Use Node.js
+  uses: actions/setup-node@v3
+  with:
+    node-version: 16
+    registry-url: "https://registry.npmjs.org"
+
+- name: Install dependencies
+  run: yarn --frozen-lockfile
+
+- name: Build project and generate out directory
+  run: yarn build
+
+- name: Export contracts, abis and interfaces
+  uses: defi-wonderland/interface-exporter-action@v1
+  with:
+    out_dir: ./out
+    interfaces_dir: src/interfaces
+    contracts_dir:  src/contracts
+    typing_type: contracts
+    package_name: @my-cool-protocol/core-interfaces-abi
+    destination_dir: abi-project
+
+- name: Publish
+  run: cd abi-project && npm publish --access public
   env:
     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```

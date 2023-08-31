@@ -18,7 +18,6 @@ on:
 
 jobs:
   check-dist:
-    if: false
     runs-on: ubuntu-latest
 
     steps:

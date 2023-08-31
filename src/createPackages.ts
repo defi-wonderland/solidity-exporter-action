@@ -9,6 +9,7 @@ export const createPackages = (
   packageName: string,
   destinationDir: string,
   interfacesDir: string,
+  contractsDir: string,
 ) => {
   // Empty export directory
   fse.emptyDirSync(destinationDir);
@@ -37,5 +38,5 @@ export const createPackages = (
   };
 
   // Create package
-  createPackage(destinationDir, outDir, interfacesDir, packageJson, typingType);
+  createPackage(destinationDir, outDir, interfacesDir, contractsDir, packageJson, typingType);
 };
