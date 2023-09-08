@@ -17,7 +17,7 @@ export const createPackage = (
 ) => {
   const abiDir = `${exportDir}/abi`;
   const contractsDir = `${exportDir}/contracts`;
-  
+
   const interfacesGlob = `${interfacesDir}/**/*.sol`;
   const contractsGlob = `${contractsExportDir}/**/*.sol`;
 
@@ -50,7 +50,7 @@ export const createPackage = (
     if (typingType === TypingType.CONTRACTS) {
       glob(contractsGlob, (err, contractPaths) => {
         if (err) throw err;
-      
+
         for (const contractPath of contractPaths) {
           const contractFile = fse.readFileSync(contractPath, 'utf8');
           const relativeContractFile = transformRemappings(contractFile);
