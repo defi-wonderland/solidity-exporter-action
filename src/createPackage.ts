@@ -15,8 +15,9 @@ export const createPackage = (
   packageJson: PackageJson,
   typingType: TypingType,
 ) => {
-  const abiDir = `${exportDir}/abi`;
-  const contractsDir = `${exportDir}/contracts`;
+  const abiDestination = `${exportDir}/abi`;
+  const contractsDestination = `${exportDir}/${contractsExportDir}`;
+  const interfacesDestination = `${exportDir}/${interfacesDir}`;
 
   const interfacesGlob = `${interfacesDir}/**/*.sol`;
   const contractsGlob = `${contractsExportDir}/**/*.sol`;
@@ -37,13 +38,13 @@ export const createPackage = (
       const relativeInterfaceFile = transformRemappings(interfaceFile);
 
       const contractPath = interfacePath.substring(interfacesDir.length + 1);
-      fse.outputFileSync(path.join(contractsDir, contractPath), relativeInterfaceFile);
+      fse.outputFileSync(path.join(interfacesDestination, contractPath), relativeInterfaceFile);
 
       // get the interface name
       const interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
 
       // copy interface abi to the export directory
-      fse.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDir}/${interfaceName}.json`);
+      fse.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDestination}/${interfaceName}.json`);
     }
     console.log(`Copied ${interfacePaths.length} interfaces`);
 
@@ -56,10 +57,10 @@ export const createPackage = (
           const relativeContractFile = transformRemappings(contractFile);
 
           const relativeContractPath = contractPath.substring(contractsExportDir.length + 1);
-          fse.outputFileSync(path.join(exportDir, relativeContractPath), relativeContractFile);
+          fse.outputFileSync(path.join(contractsDestination, relativeContractPath), relativeContractFile);
 
           const contractName = contractPath.substring(contractPath.lastIndexOf('/') + 1, contractPath.lastIndexOf('.'));
-          fse.copySync(`${outDir}/${contractName}.sol/${contractName}.json`, `${abiDir}/${contractName}.json`);
+          fse.copySync(`${outDir}/${contractName}.sol/${contractName}.json`, `${abiDestination}/${contractName}.json`);
         }
         console.log(`Copied ${contractPaths.length} contracts`);
       });

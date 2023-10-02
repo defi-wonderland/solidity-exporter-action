@@ -48,8 +48,9 @@ const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const transformRemappings_1 = __nccwpck_require__(7616);
 const constants_1 = __nccwpck_require__(5105);
 const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, packageJson, typingType) => {
-    const abiDir = `${exportDir}/abi`;
-    const contractsDir = `${exportDir}/contracts`;
+    const abiDestination = `${exportDir}/abi`;
+    const contractsDestination = `${exportDir}/${contractsExportDir}`;
+    const interfacesDestination = `${exportDir}/${interfacesDir}`;
     const interfacesGlob = `${interfacesDir}/**/*.sol`;
     const contractsGlob = `${contractsExportDir}/**/*.sol`;
     // empty export directory
@@ -65,11 +66,11 @@ const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, pac
             const interfaceFile = fs_extra_1.default.readFileSync(interfacePath, 'utf8');
             const relativeInterfaceFile = (0, transformRemappings_1.transformRemappings)(interfaceFile);
             const contractPath = interfacePath.substring(interfacesDir.length + 1);
-            fs_extra_1.default.outputFileSync(path_1.default.join(contractsDir, contractPath), relativeInterfaceFile);
+            fs_extra_1.default.outputFileSync(path_1.default.join(interfacesDestination, contractPath), relativeInterfaceFile);
             // get the interface name
             const interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
             // copy interface abi to the export directory
-            fs_extra_1.default.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDir}/${interfaceName}.json`);
+            fs_extra_1.default.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDestination}/${interfaceName}.json`);
         }
         console.log(`Copied ${interfacePaths.length} interfaces`);
         if (typingType === constants_1.TypingType.CONTRACTS) {
@@ -80,9 +81,9 @@ const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, pac
                     const contractFile = fs_extra_1.default.readFileSync(contractPath, 'utf8');
                     const relativeContractFile = (0, transformRemappings_1.transformRemappings)(contractFile);
                     const relativeContractPath = contractPath.substring(contractsExportDir.length + 1);
-                    fs_extra_1.default.outputFileSync(path_1.default.join(exportDir, relativeContractPath), relativeContractFile);
+                    fs_extra_1.default.outputFileSync(path_1.default.join(contractsDestination, relativeContractPath), relativeContractFile);
                     const contractName = contractPath.substring(contractPath.lastIndexOf('/') + 1, contractPath.lastIndexOf('.'));
-                    fs_extra_1.default.copySync(`${outDir}/${contractName}.sol/${contractName}.json`, `${abiDir}/${contractName}.json`);
+                    fs_extra_1.default.copySync(`${outDir}/${contractName}.sol/${contractName}.json`, `${abiDestination}/${contractName}.json`);
                 }
                 console.log(`Copied ${contractPaths.length} contracts`);
             });

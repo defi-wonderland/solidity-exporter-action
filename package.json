@@ -1,7 +1,6 @@
 {
   "name": "interface-exporter-action",
   "version": "1.0.0",
-  "private": true,
   "description": "An action to generate npm packages based on Solidity contract interfaces",
   "main": "lib/main.js",
   "scripts": {
