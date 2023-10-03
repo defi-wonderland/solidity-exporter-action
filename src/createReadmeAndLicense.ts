@@ -6,7 +6,7 @@ export const createReadmeAndLicense = (packageName: string, typingType: TypingTy
   const readmeContent = `
   # ${packageName}
 
-  ${packageName} offers ${publicTypeLabels[typingType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
+  ${packageName} offers ${publicTypeLabels[typingType]} for seamless interactions with smart contracts. Integrate these interfaces effortlessly into your projects.
   
   ## Installation
   

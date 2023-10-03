@@ -7,8 +7,8 @@ export interface PackageJson {
 }
 
 export const publicTypeLabels: Record<TypingType, string> = {
-  [TypingType.ABI]: 'ABI',
-  [TypingType.ETHERS_V6]: 'Ethers.js',
-  [TypingType.WEB3_V1]: 'Web3',
-  [TypingType.CONTRACTS]: 'Contracts', // Contracts, abis and interfaces
+  [TypingType.ABI]: 'ABIs',
+  [TypingType.ETHERS_V6]: 'ethers.js types',
+  [TypingType.WEB3_V1]: 'web3 types',
+  [TypingType.CONTRACTS]: 'ABIs and contracts',
 };

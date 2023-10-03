@@ -162,7 +162,7 @@ const createReadmeAndLicense = (packageName, typingType, exportDir) => {
     const readmeContent = `
   # ${packageName}
 
-  ${packageName} offers ${types_1.publicTypeLabels[typingType]} interfaces for designed for seamless interaction with smart contracts. Integrate these interfaces effortlessly into your projects.
+  ${packageName} offers ${types_1.publicTypeLabels[typingType]} for seamless interactions with smart contracts. Integrate these interfaces effortlessly into your projects.
   
   ## Installation
   
@@ -342,10 +342,10 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.publicTypeLabels = void 0;
 const constants_1 = __nccwpck_require__(5105);
 exports.publicTypeLabels = {
-    [constants_1.TypingType.ABI]: 'ABI',
-    [constants_1.TypingType.ETHERS_V6]: 'Ethers.js',
-    [constants_1.TypingType.WEB3_V1]: 'Web3',
-    [constants_1.TypingType.CONTRACTS]: 'Contracts', // Contracts, abis and interfaces
+    [constants_1.TypingType.ABI]: 'ABIs',
+    [constants_1.TypingType.ETHERS_V6]: 'ethers.js types',
+    [constants_1.TypingType.WEB3_V1]: 'web3 types',
+    [constants_1.TypingType.CONTRACTS]: 'ABIs and contracts',
 };
 
 
