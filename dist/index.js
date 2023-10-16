@@ -25,7 +25,7 @@ var TypingType;
     TypingType["ETHERS_V6"] = "ethers-v6";
     TypingType["WEB3_V1"] = "web3-v1";
     TypingType["CONTRACTS"] = "contracts";
-})(TypingType = exports.TypingType || (exports.TypingType = {}));
+})(TypingType || (exports.TypingType = TypingType = {}));
 
 
 /***/ }),
