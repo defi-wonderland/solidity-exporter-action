@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# 1. Build the contracts
+# 2. Compile the nodejs code into js and create the licenses
+npm run build && npm run package && git add dist
