@@ -69,11 +69,5 @@ export const createPackage = (
     // install package dependencies
     console.log(`Installing abi dependencies`);
     execSync(`cd ${exportDir} && yarn`);
-
-    // use typechain if needed
-    if (typingType === TypingType.ETHERS_V6 || typingType === TypingType.WEB3_V1) {
-      console.log(`Generating types for ${typingType}`);
-      execSync(`yarn typechain --target ${typingType} --out-dir ${exportDir}/${typingType} '${exportDir}/abi/*.json'`);
-    }
   });
 };

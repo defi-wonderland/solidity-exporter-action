@@ -10,7 +10,7 @@ inputs:
     default: 'src/interfaces'
     required: false
   typing_type:
-    description: 'interface compatibility: abi, ethers-v6, web3-v1, contracts'
+    description: 'interface compatibility: abi, contracts'
     required: true
   package_name:
     description: 'name of the package to be publish'

@@ -7,23 +7,10 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TypingType = exports.web3Dependencies = exports.ethersDependencies = void 0;
-/* eslint-disable prettier/prettier */
-exports.ethersDependencies = {
-    '@ethersproject/abi': '5.7.0',
-    '@ethersproject/providers': '5.7.2',
-    'bn.js': '5.2.1',
-    ethers: '6.0.3',
-};
-exports.web3Dependencies = {
-    'bn.js': '5.2.1',
-    'web3-core': '1.9.0',
-};
+exports.TypingType = void 0;
 var TypingType;
 (function (TypingType) {
     TypingType["ABI"] = "abi";
-    TypingType["ETHERS_V6"] = "ethers-v6";
-    TypingType["WEB3_V1"] = "web3-v1";
     TypingType["CONTRACTS"] = "contracts";
 })(TypingType || (exports.TypingType = TypingType = {}));
 
@@ -91,11 +78,6 @@ const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, pac
         // install package dependencies
         console.log(`Installing abi dependencies`);
         (0, child_process_1.execSync)(`cd ${exportDir} && yarn`);
-        // use typechain if needed
-        if (typingType === constants_1.TypingType.ETHERS_V6 || typingType === constants_1.TypingType.WEB3_V1) {
-            console.log(`Generating types for ${typingType}`);
-            (0, child_process_1.execSync)(`yarn typechain --target ${typingType} --out-dir ${exportDir}/${typingType} '${exportDir}/abi/*.json'`);
-        }
     });
 };
 exports.createPackage = createPackage;
@@ -115,7 +97,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createPackages = void 0;
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const createPackage_1 = __nccwpck_require__(3393);
-const constants_1 = __nccwpck_require__(5105);
 const child_process_1 = __nccwpck_require__(2081);
 const createPackages = (outDir, typingType, packageName, destinationDir, interfacesDir, contractsDir) => {
     // Empty export directory
@@ -127,16 +108,10 @@ const createPackages = (outDir, typingType, packageName, destinationDir, interfa
     // Checks if exist
     if (!wholePackage)
         return;
-    // Add additional dependencies if needed
-    let additionalDependencies = {};
-    if (typingType === constants_1.TypingType.ETHERS_V6)
-        additionalDependencies = constants_1.ethersDependencies;
-    if (typingType === constants_1.TypingType.WEB3_V1)
-        additionalDependencies = constants_1.web3Dependencies;
     const packageJson = {
         name: packageName,
         version: wholePackage.version,
-        dependencies: Object.assign(Object.assign({}, wholePackage.dependencies), additionalDependencies),
+        dependencies: Object.assign({}, wholePackage.dependencies),
     };
     // Create package
     (0, createPackage_1.createPackage)(destinationDir, outDir, interfacesDir, contractsDir, packageJson, typingType);
@@ -343,8 +318,6 @@ exports.publicTypeLabels = void 0;
 const constants_1 = __nccwpck_require__(5105);
 exports.publicTypeLabels = {
     [constants_1.TypingType.ABI]: 'ABIs',
-    [constants_1.TypingType.ETHERS_V6]: 'ethers.js types',
-    [constants_1.TypingType.WEB3_V1]: 'web3 types',
     [constants_1.TypingType.CONTRACTS]: 'ABIs and contracts',
 };
 
