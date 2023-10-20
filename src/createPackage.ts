@@ -26,8 +26,7 @@ export const createPackage = (
   fse.emptyDirSync(exportDir);
   fse.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
 
-  createReadmeAndLicense(packageJson.name, typingType, exportDir);
-
+  let interfaceName = '';
   // list all of the solidity interfaces
   glob(interfacesGlob, (err, interfacePaths) => {
     if (err) throw err;
@@ -41,7 +40,7 @@ export const createPackage = (
       fse.outputFileSync(path.join(interfacesDestination, contractPath), relativeInterfaceFile);
 
       // get the interface name
-      const interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
+      interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
 
       // copy interface abi to the export directory
       fse.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDestination}/${interfaceName}.json`);
@@ -65,6 +64,8 @@ export const createPackage = (
         console.log(`Copied ${contractPaths.length} contracts`);
       });
     }
+
+    createReadmeAndLicense(packageJson.name, typingType, exportDir, interfaceName);
 
     // install package dependencies
     console.log(`Installing abi dependencies`);

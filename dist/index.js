@@ -43,7 +43,7 @@ const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, pac
     // empty export directory
     fs_extra_1.default.emptyDirSync(exportDir);
     fs_extra_1.default.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
-    (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, typingType, exportDir);
+    let interfaceName = '';
     // list all of the solidity interfaces
     (0, glob_1.default)(interfacesGlob, (err, interfacePaths) => {
         if (err)
@@ -55,7 +55,7 @@ const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, pac
             const contractPath = interfacePath.substring(interfacesDir.length + 1);
             fs_extra_1.default.outputFileSync(path_1.default.join(interfacesDestination, contractPath), relativeInterfaceFile);
             // get the interface name
-            const interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
+            interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
             // copy interface abi to the export directory
             fs_extra_1.default.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDestination}/${interfaceName}.json`);
         }
@@ -75,6 +75,7 @@ const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, pac
                 console.log(`Copied ${contractPaths.length} contracts`);
             });
         }
+        (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, typingType, exportDir, interfaceName);
         // install package dependencies
         console.log(`Installing abi dependencies`);
         (0, child_process_1.execSync)(`cd ${exportDir} && yarn`);
@@ -133,12 +134,15 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createReadmeAndLicense = void 0;
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const types_1 = __nccwpck_require__(8164);
-const createReadmeAndLicense = (packageName, typingType, exportDir) => {
+const createReadmeAndLicense = (packageName, typingType, exportDir, sampleInterfaceName) => {
     const readmeContent = `
+  [![npm version](https://img.shields.io/npm/v/${packageName}/latest.svg)](https://www.npmjs.com/package/${packageName}/v/latest)
+
   # ${packageName}
 
-  ${packageName} offers ${types_1.publicTypeLabels[typingType]} for seamless interactions with smart contracts. Integrate these interfaces effortlessly into your projects.
-  
+  ${packageName} offers support for ${types_1.publicTypeLabels[typingType]} typing for seamless interactions with smart contracts. 
+  Integrate these interfaces effortlessly into your projects.
+
   ## Installation
   
   You can easily install this package using either npm or yarn:
@@ -153,6 +157,25 @@ const createReadmeAndLicense = (packageName, typingType, exportDir) => {
   npm install ${packageName}
   \`\`\`
   
+
+  ## Usage
+
+  This is an example of how you can import an interface:
+
+  \`\`\`typescript
+  import { ${sampleInterfaceName} } from '${packageName}';
+  \`\`\`
+
+  And then you can interact with it in the way you need.
+
+  ## Repository
+
+  To learn more about this package, please visit the [interface-exporter-action-private](https://github.com/defi-wonderland/interface-exporter-action-private) repo.
+
+  ## Contributors
+
+  Maintained with love by [Wonderland](https://defi.sucks). Made possible by viewers like you.
+
   ## License
   
   ${packageName} is licensed under the [MIT License](LICENSE).

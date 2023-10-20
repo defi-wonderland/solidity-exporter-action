@@ -16,7 +16,44 @@ describe('createReadmeAndLicense', () => {
 
   it('should create abi README.MD file with correct package name', () => {
     const packageName = 'test-package';
-    createReadmeAndLicense(packageName, TypingType.ABI, exportDir);
+    const sampleInterface = 'ISampleInterface';
+    createReadmeAndLicense(packageName, TypingType.ABI, exportDir, sampleInterface);
+
+    const readmePath = `${exportDir}/README.MD`;
+    expect(fse.existsSync(readmePath)).to.be.true;
+
+    const readmeContent = fse.readFileSync(readmePath, 'utf8');
+    expect(readmeContent).to.include(`# ${packageName}`);
+  });
+
+  it('should create ethers v6 README.MD file with correct package name', () => {
+    const packageName = 'test-package';
+    const sampleInterface = 'ISampleInterface';
+    createReadmeAndLicense(packageName, TypingType.ABI, exportDir, sampleInterface);
+
+    const readmePath = `${exportDir}/README.MD`;
+    expect(fse.existsSync(readmePath)).to.be.true;
+
+    const readmeContent = fse.readFileSync(readmePath, 'utf8');
+    expect(readmeContent).to.include(`# ${packageName}`);
+  });
+
+  it('should add the sample interface on the README.MD file', () => {
+    const packageName = 'test-package';
+    const sampleInterface = 'ISampleInterface';
+    createReadmeAndLicense(packageName, TypingType.ABI, exportDir, sampleInterface);
+
+    const readmePath = `${exportDir}/README.MD`;
+    expect(fse.existsSync(readmePath)).to.be.true;
+
+    const readmeContent = fse.readFileSync(readmePath, 'utf8');
+    expect(readmeContent).to.include(`${sampleInterface}`);
+  });
+
+  it('should create web3 README.MD file with correct package name', () => {
+    const packageName = 'test-package';
+    const sampleInterface = 'ISampleInterface';
+    createReadmeAndLicense(packageName, TypingType.CONTRACTS, exportDir, sampleInterface);
 
     const readmePath = `${exportDir}/README.MD`;
     expect(fse.existsSync(readmePath)).to.be.true;
@@ -27,7 +64,8 @@ describe('createReadmeAndLicense', () => {
 
   it('should create LICENSE file if it exists', () => {
     const packageName = 'test-package';
-    createReadmeAndLicense(packageName, TypingType.CONTRACTS, exportDir);
+    const sampleInterface = 'ISampleInterface';
+    createReadmeAndLicense(packageName, TypingType.CONTRACTS, exportDir, sampleInterface);
 
     const licenseFilePath = `${exportDir}/LICENSE`;
     expect(fse.existsSync(licenseFilePath)).to.be.true;
