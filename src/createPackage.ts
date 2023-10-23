@@ -1,74 +1,47 @@
-import glob from 'glob';
-import path from 'path';
 import fse from 'fs-extra';
 import { execSync } from 'child_process';
+import copySolidityFiles from './copySolidityFiles';
 import { PackageJson } from './types';
 import { createReadmeAndLicense } from './createReadmeAndLicense';
-import { transformRemappings } from './transformRemappings';
-import { TypingType } from './constants';
+import { ExportType } from './constants';
 
 export const createPackage = (
-  exportDir: string,
   outDir: string,
   interfacesDir: string,
-  contractsExportDir: string,
-  packageJson: PackageJson,
-  typingType: TypingType,
+  contractsDir: string,
+  packageName: string,
+  exportType: ExportType,
 ) => {
-  const abiDestination = `${exportDir}/abi`;
-  const contractsDestination = `${exportDir}/${contractsExportDir}`;
-  const interfacesDestination = `${exportDir}/${interfacesDir}`;
+  // Empty export destination directory
+  const destinationDir = `export/${packageName}-${exportType}`;
+  fse.emptyDirSync(destinationDir);
 
-  const interfacesGlob = `${interfacesDir}/**/*.sol`;
-  const contractsGlob = `${contractsExportDir}/**/*.sol`;
+  console.log('Installing dependencies');
+  execSync('yarn');
 
-  // empty export directory
-  fse.emptyDirSync(exportDir);
-  fse.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
+  // Read and copy the input package.json
+  const inputPackageJson = fse.readJsonSync('./package.json');
+  if (!inputPackageJson) throw new Error('package.json not found');
+  // Create custom package.json in the export directory
+  const packageJson: PackageJson = {
+    name: packageName,
+    version: inputPackageJson.version,
+    dependencies: {
+      ...inputPackageJson.dependencies,
+    },
+  };
+  fse.writeJsonSync(`${destinationDir}/package.json`, packageJson, { spaces: 4 });
 
-  let interfaceName = '';
-  // list all of the solidity interfaces
-  glob(interfacesGlob, (err, interfacePaths) => {
-    if (err) throw err;
+  // Copy the interfaces and their ABIs
+  copySolidityFiles(outDir, interfacesDir, destinationDir);
 
-    // for each interface path
-    for (const interfacePath of interfacePaths) {
-      const interfaceFile = fse.readFileSync(interfacePath, 'utf8');
-      const relativeInterfaceFile = transformRemappings(interfaceFile);
+  // Copy the contracts only if the export type is contracts
+  if (exportType === ExportType.CONTRACTS) copySolidityFiles(outDir, contractsDir, destinationDir);
 
-      const contractPath = interfacePath.substring(interfacesDir.length + 1);
-      fse.outputFileSync(path.join(interfacesDestination, contractPath), relativeInterfaceFile);
+  createReadmeAndLicense(packageJson.name, exportType, destinationDir);
+  console.log(`Created README and LICENSE`);
 
-      // get the interface name
-      interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
-
-      // copy interface abi to the export directory
-      fse.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDestination}/${interfaceName}.json`);
-    }
-    console.log(`Copied ${interfacePaths.length} interfaces`);
-
-    if (typingType === TypingType.CONTRACTS) {
-      glob(contractsGlob, (err, contractPaths) => {
-        if (err) throw err;
-
-        for (const contractPath of contractPaths) {
-          const contractFile = fse.readFileSync(contractPath, 'utf8');
-          const relativeContractFile = transformRemappings(contractFile);
-
-          const relativeContractPath = contractPath.substring(contractsExportDir.length + 1);
-          fse.outputFileSync(path.join(contractsDestination, relativeContractPath), relativeContractFile);
-
-          const contractName = contractPath.substring(contractPath.lastIndexOf('/') + 1, contractPath.lastIndexOf('.'));
-          fse.copySync(`${outDir}/${contractName}.sol/${contractName}.json`, `${abiDestination}/${contractName}.json`);
-        }
-        console.log(`Copied ${contractPaths.length} contracts`);
-      });
-    }
-
-    createReadmeAndLicense(packageJson.name, typingType, exportDir, interfaceName);
-
-    // install package dependencies
-    console.log(`Installing abi dependencies`);
-    execSync(`cd ${exportDir} && yarn`);
-  });
+  // install package dependencies
+  console.log(`Installing abi dependencies`);
+  execSync(`cd ${destinationDir} && yarn`);
 };

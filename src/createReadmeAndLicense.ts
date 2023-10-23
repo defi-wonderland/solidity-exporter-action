@@ -1,19 +1,14 @@
 import fse from 'fs-extra';
-import { TypingType } from './constants';
+import { ExportType } from './constants';
 import { publicTypeLabels } from './types';
 
-export const createReadmeAndLicense = (
-  packageName: string,
-  typingType: TypingType,
-  exportDir: string,
-  sampleInterfaceName: string,
-) => {
+export const createReadmeAndLicense = (packageName: string, exportType: ExportType, exportDir: string) => {
   const readmeContent = `
   [![npm version](https://img.shields.io/npm/v/${packageName}/latest.svg)](https://www.npmjs.com/package/${packageName}/v/latest)
 
   # ${packageName}
 
-  ${packageName} offers support for ${publicTypeLabels[typingType]} typing for seamless interactions with smart contracts. 
+  ${packageName} offers support for ${publicTypeLabels[exportType]} typing for seamless interactions with smart contracts. 
   Integrate these interfaces effortlessly into your projects.
 
   ## Installation
@@ -36,7 +31,8 @@ export const createReadmeAndLicense = (
   This is an example of how you can import an interface:
 
   \`\`\`typescript
-  import { ${sampleInterfaceName} } from '${packageName}';
+  import { ISomeInterface } from '${packageName}';
+  import { SomeContract } from '${packageName}';
   \`\`\`
 
   And then you can interact with it in the way you need.
