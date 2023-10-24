@@ -1,6 +1,6 @@
 import fse from 'fs-extra';
 import { execSync } from 'child_process';
-import copySolidityFiles from './copySolidityFiles';
+import { copySolidityFiles } from './copySolidityFiles';
 import { PackageJson } from './types';
 import { createReadmeAndLicense } from './createReadmeAndLicense';
 import { ExportType } from './constants';
@@ -41,7 +41,7 @@ export const createPackage = (
   createReadmeAndLicense(packageJson.name, exportType, destinationDir);
   console.log(`Created README and LICENSE`);
 
-  // install package dependencies
-  console.log(`Installing abi dependencies`);
+  // Install package dependencies
+  console.log(`Installing dependencies`);
   execSync(`cd ${destinationDir} && yarn`);
 };

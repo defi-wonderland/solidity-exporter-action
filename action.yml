@@ -1,5 +1,5 @@
 name: 'Interface exporter action'
-description: 'An action to generate npm packages based on solidity interfaces and contracts'
+description: 'An action to generate npm packages based on Solidity interfaces and contracts'
 author: 'Wonderland'
 
 inputs:
@@ -13,19 +13,19 @@ inputs:
   interfaces:
     description: 'path to the interfaces directory'
     required: false
-    default: 'interfaces'
+    default: 'solidity/interfaces'
   contracts:
     description: 'path to the contracts directory'
     required: false
-    default: 'contracts'
+    default: 'solidity/contracts'
   export_type:
-    description: '`abi` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts and their ABIs as well'
+    description: '`interface` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts, interfaces and their ABIs as well'
     required: false
     default: 'interfaces'
 
 outputs:
-  passed:
-    description: 'boolean describing if the tests passed or not'
+  exported:
+    description: 'boolean describing package was exported successfully or not'
 runs:
   using: 'node16'
   main: 'dist/index.js'

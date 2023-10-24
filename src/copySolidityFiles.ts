@@ -3,7 +3,7 @@ import path from 'path';
 import fse from 'fs-extra';
 import { transformRemappings } from './transformRemappings';
 
-export default function copySolidityFiles(baseDir: string, filesDir: string, destinationDir: string) {
+export const copySolidityFiles = (baseDir: string, filesDir: string, destinationDir: string) => {
   const filesDestination = `${destinationDir}/${filesDir}`;
   const abiDestination = `${destinationDir}/abi`;
 
@@ -16,7 +16,7 @@ export default function copySolidityFiles(baseDir: string, filesDir: string, des
       const file = fse.readFileSync(filePath, 'utf8');
       const relativeFile = transformRemappings(file);
 
-      // Copy the file to the destinatino directory
+      // Copy the file to the destination directory
       const relativeFilePath = filePath.substring(filesDir.length + 1);
       fse.outputFileSync(path.join(filesDestination, relativeFilePath), relativeFile);
 
@@ -27,4 +27,4 @@ export default function copySolidityFiles(baseDir: string, filesDir: string, des
 
     console.log(`Copied ${filesPaths.length} interfaces and ABIs`);
   });
-}
+};

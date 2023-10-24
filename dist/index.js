@@ -26,11 +26,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.copySolidityFiles = void 0;
 const glob_1 = __importDefault(__nccwpck_require__(1957));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const transformRemappings_1 = __nccwpck_require__(7616);
-function copySolidityFiles(baseDir, filesDir, destinationDir) {
+const copySolidityFiles = (baseDir, filesDir, destinationDir) => {
     const filesDestination = `${destinationDir}/${filesDir}`;
     const abiDestination = `${destinationDir}/abi`;
     // List all of the solidity files on the input directory
@@ -41,7 +42,7 @@ function copySolidityFiles(baseDir, filesDir, destinationDir) {
         for (const filePath of filesPaths) {
             const file = fs_extra_1.default.readFileSync(filePath, 'utf8');
             const relativeFile = (0, transformRemappings_1.transformRemappings)(file);
-            // Copy the file to the destinatino directory
+            // Copy the file to the destination directory
             const relativeFilePath = filePath.substring(filesDir.length + 1);
             fs_extra_1.default.outputFileSync(path_1.default.join(filesDestination, relativeFilePath), relativeFile);
             // Copy the abi to the export directory using the same file name
@@ -50,8 +51,8 @@ function copySolidityFiles(baseDir, filesDir, destinationDir) {
         }
         console.log(`Copied ${filesPaths.length} interfaces and ABIs`);
     });
-}
-exports["default"] = copySolidityFiles;
+};
+exports.copySolidityFiles = copySolidityFiles;
 
 
 /***/ }),
@@ -68,7 +69,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createPackage = void 0;
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const child_process_1 = __nccwpck_require__(2081);
-const copySolidityFiles_1 = __importDefault(__nccwpck_require__(9676));
+const copySolidityFiles_1 = __nccwpck_require__(9676);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const constants_1 = __nccwpck_require__(5105);
 const createPackage = (outDir, interfacesDir, contractsDir, packageName, exportType) => {
@@ -89,14 +90,14 @@ const createPackage = (outDir, interfacesDir, contractsDir, packageName, exportT
     };
     fs_extra_1.default.writeJsonSync(`${destinationDir}/package.json`, packageJson, { spaces: 4 });
     // Copy the interfaces and their ABIs
-    (0, copySolidityFiles_1.default)(outDir, interfacesDir, destinationDir);
+    (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
     // Copy the contracts only if the export type is contracts
     if (exportType === constants_1.ExportType.CONTRACTS)
-        (0, copySolidityFiles_1.default)(outDir, contractsDir, destinationDir);
+        (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
     (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportType, destinationDir);
     console.log(`Created README and LICENSE`);
-    // install package dependencies
-    console.log(`Installing abi dependencies`);
+    // Install package dependencies
+    console.log(`Installing dependencies`);
     (0, child_process_1.execSync)(`cd ${destinationDir} && yarn`);
 };
 exports.createPackage = createPackage;
