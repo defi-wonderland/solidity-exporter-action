@@ -64,17 +64,17 @@ jobs:
       - name: Update version
         run: yarn version --new-version "0.0.0-${GITHUB_SHA::8}" --no-git-tag-version
 
-      - name: Export Interfaces - ${{ matrix.export_type }}
-        uses: defi-wonderland/interface-exporter-action@v1
+      - name: Export Solidity - ${{ matrix.export_type }}
+        uses: defi-wonderland/interface-exporter-action@latest
         with:
-          package_name: '@your-project-${{ matrix.export_type }}'
+          package_name: '@your-project-name'
           out: 'out'
           interfaces: 'solidity/interfaces'
           contracts: 'solidity/contracts'
           export_type: '${{ matrix.export_type }}'
 
       - name: Publish
-        run: cd export/@tour-project-${{ matrix.export_type }} && npm publish --access public
+        run: cd export/@your-project-name-${{ matrix.export_type }} && npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
