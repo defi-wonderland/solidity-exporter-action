@@ -65,7 +65,7 @@ jobs:
         run: yarn version --new-version "0.0.0-${GITHUB_SHA::8}" --no-git-tag-version
 
       - name: Export Solidity - ${{ matrix.export_type }}
-        uses: defi-wonderland/interface-exporter-action@latest
+        uses: defi-wonderland/interface-exporter-action@v1
         with:
           package_name: '@your-project-name'
           out: 'out'
