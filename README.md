@@ -8,13 +8,13 @@ Interface Exporter Action automates the process of extracting TypeScript interfa
 
 ## Action Inputs
 
-| Input        | Description                                                | Default        | Options               |
-| ------------ | ---------------------------------------------------------- | -------------- | --------------------- |
-| package_name | Chosen name for the exported NPM package                   | **Required**   |                       |
-| out          | The path to the directory where contracts are built        | out            |                       |
-| interfaces   | The path to the directory where the interfaces are located | src/interfaces |                       |
-| contracts    | The path to the directory where the contracts are located  | src/contracts  |                       |
-| export_type  | Export option which NPM package will be compatible         | interfaces     | interfaces, contracts |
+| Input        | Description                                                                                                                              | Default        | Options               |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------------------- |
+| package_name | name of the package to be published                                                                                                      | **Required**   |                       |
+| out          | path to the `out` folder containing the compiled contracts                                                                               | out            |                       |
+| interfaces   | path to the interfaces directory                                                                                                         | src/interfaces |                       |
+| contracts    | path to the contracts directory                                                                                                          | src/contracts  |                       |
+| export_type  | `interface` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts, interfaces and their ABIs as well | interfaces     | interfaces, contracts |
 
 ## Action Outputs
 
@@ -67,16 +67,16 @@ jobs:
       - name: Export Interfaces - ${{ matrix.export_type }}
         uses: defi-wonderland/interface-exporter-action@v1
         with:
-          package_name: '@defi-wonderland/interfaces-exporter-action-test-${{ matrix.export_type }}'
+          package_name: '@your-project-${{ matrix.export_type }}'
           out: 'out'
           interfaces: 'solidity/interfaces'
           contracts: 'solidity/contracts'
           export_type: '${{ matrix.export_type }}'
 
       - name: Publish
-        run: cd export/@defi-wonderland/interfaces-exporter-action-test-${{ matrix.export_type }} && npm publish --access public
+        run: cd export/@tour-project-${{ matrix.export_type }} && npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
 
 # Development
