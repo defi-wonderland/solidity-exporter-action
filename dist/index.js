@@ -224,12 +224,12 @@ function run() {
         try {
             core.debug(`Parsing inputs`);
             const outDir = core.getInput('out_dir');
-            const exportType = core.getInput('typing_type');
+            const exportType = core.getInput('export_type');
             const packageName = core.getInput('package_name');
             const interfacesDir = core.getInput('interfaces_dir');
             const contractsDir = core.getInput('contracts_dir') || '';
             if (!Object.values(constants_1.ExportType).includes(exportType)) {
-                throw new Error(`Invalid input for typing_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
+                throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
             }
             core.debug(`Creating package`);
             (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, packageName, exportType);

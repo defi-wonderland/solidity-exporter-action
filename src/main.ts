@@ -7,13 +7,13 @@ async function run(): Promise<void> {
   try {
     core.debug(`Parsing inputs`);
     const outDir = core.getInput('out_dir');
-    const exportType = core.getInput('typing_type') as ExportType;
+    const exportType = core.getInput('export_type') as ExportType;
     const packageName = core.getInput('package_name');
     const interfacesDir = core.getInput('interfaces_dir');
     const contractsDir = core.getInput('contracts_dir') || '';
 
     if (!Object.values(ExportType).includes(exportType)) {
-      throw new Error(`Invalid input for typing_type. Valid inputs are: ${Object.values(ExportType).join(', ')}`);
+      throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(ExportType).join(', ')}`);
     }
 
     core.debug(`Creating package`);

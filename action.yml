@@ -18,7 +18,7 @@ inputs:
     description: 'path to the contracts directory'
     required: false
     default: 'contracts'
-  typing_type:
+  export_type:
     description: '`abi` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts and their ABIs as well'
     required: false
     default: 'interfaces'
