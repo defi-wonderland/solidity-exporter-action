@@ -1,10 +1,10 @@
-[![build-test](https://github.com/defi-wonderland/interface-exporter-action/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/defi-wonderland/interface-exporter-action/actions/workflows/test.yml)
-[![tag badge](https://img.shields.io/github/v/tag/defi-wonderland/interface-exporter-action)](https://github.com/defi-wonderland/interface-exporter-action/tags)
-[![license badge](https://img.shields.io/github/license/defi-wonderland/interface-exporter-action)](./LICENSE)
+[![build-test](https://github.com/defi-wonderland/solidity-exporter-action/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/defi-wonderland/solidity-exporter-action/actions/workflows/test.yml)
+[![tag badge](https://img.shields.io/github/v/tag/defi-wonderland/solidity-exporter-action)](https://github.com/defi-wonderland/solidity-exporter-action/tags)
+[![license badge](https://img.shields.io/github/license/defi-wonderland/solidity-exporter-action)](./LICENSE)
 
-# Interface Exporter Action
+# Solidity Exporter Action
 
-Interface Exporter Action automates the process of extracting TypeScript interfaces from Solidity contracts and interfaces and provides compatibility with TypeChain. Developers can seamlessly generate typings with only a few lines of yaml code.
+Solidity Exporter Action automates the process of extracting TypeScript interfaces from Solidity contracts and interfaces and provides compatibility with TypeChain. Developers can seamlessly generate typings with only a few lines of yaml code.
 
 ## Action Inputs
 
@@ -26,7 +26,7 @@ Interface Exporter Action automates the process of extracting TypeScript interfa
 
 ## Example
 
-Interface Exporter Action generates NPM packages with your interfaces and contracts ABIs using a matrix of arguments with both and then publishes them to NPM:
+Solidity Exporter Action generates NPM packages with your interfaces and contracts ABIs using a matrix of arguments with both and then publishes them to NPM:
 
 ```yaml
 name: Export And Publish Interfaces And Contracts
@@ -65,7 +65,7 @@ jobs:
         run: yarn version --new-version "0.0.0-${GITHUB_SHA::8}" --no-git-tag-version
 
       - name: Export Solidity - ${{ matrix.export_type }}
-        uses: defi-wonderland/interface-exporter-action@v1
+        uses: defi-wonderland/solidity-exporter-action@v1
         with:
           package_name: '@your-project-name'
           out: 'out'
