@@ -224,11 +224,11 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Parsing inputs`);
-            const outDir = core.getInput('out_dir');
-            const exportType = core.getInput('export_type');
             const packageName = core.getInput('package_name');
-            const interfacesDir = core.getInput('interfaces_dir');
-            const contractsDir = core.getInput('contracts_dir') || '';
+            const outDir = core.getInput('out');
+            const interfacesDir = core.getInput('interfaces');
+            const contractsDir = core.getInput('contracts') || '';
+            const exportType = core.getInput('export_type');
             if (!Object.values(constants_1.ExportType).includes(exportType)) {
                 throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
             }

@@ -6,11 +6,11 @@ import { ExportType } from './constants';
 async function run(): Promise<void> {
   try {
     core.debug(`Parsing inputs`);
-    const outDir = core.getInput('out_dir');
-    const exportType = core.getInput('export_type') as ExportType;
     const packageName = core.getInput('package_name');
-    const interfacesDir = core.getInput('interfaces_dir');
-    const contractsDir = core.getInput('contracts_dir') || '';
+    const outDir = core.getInput('out');
+    const interfacesDir = core.getInput('interfaces');
+    const contractsDir = core.getInput('contracts') || '';
+    const exportType = core.getInput('export_type') as ExportType;
 
     if (!Object.values(ExportType).includes(exportType)) {
       throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(ExportType).join(', ')}`);
