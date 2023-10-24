@@ -19,7 +19,7 @@ on:
 
 jobs:
   analyze:
-    if: github.repository == 'defi-wonderland/interface-exporter-action'
+    if: github.repository == 'defi-wonderland/solidity-exporter-action'
     name: Analyze
     runs-on: ubuntu-latest
     permissions:

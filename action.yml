@@ -1,4 +1,4 @@
-name: 'Interface exporter action'
+name: 'Solidity exporter action'
 description: 'An action to generate npm packages based on Solidity interfaces and contracts'
 author: 'Wonderland'
 

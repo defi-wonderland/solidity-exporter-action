@@ -156,7 +156,7 @@ const createReadmeAndLicense = (packageName, exportType, exportDir) => {
 
   ## Repository
 
-  To learn more about this package, please visit the [interface-exporter-action-private](https://github.com/defi-wonderland/interface-exporter-action-private) repo.
+  To learn more about this package, please visit the [solidity-exporter-action-private](https://github.com/defi-wonderland/solidity-exporter-action-private) repo.
 
   ## Contributors
 
