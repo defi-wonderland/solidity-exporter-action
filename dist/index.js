@@ -7,12 +7,54 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TypingType = void 0;
-var TypingType;
-(function (TypingType) {
-    TypingType["ABI"] = "abi";
-    TypingType["CONTRACTS"] = "contracts";
-})(TypingType || (exports.TypingType = TypingType = {}));
+exports.ExportType = void 0;
+var ExportType;
+(function (ExportType) {
+    ExportType["INTERFACES"] = "interfaces";
+    ExportType["CONTRACTS"] = "contracts";
+})(ExportType || (exports.ExportType = ExportType = {}));
+
+
+/***/ }),
+
+/***/ 9676:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.copySolidityFiles = void 0;
+const glob_1 = __importDefault(__nccwpck_require__(1957));
+const path_1 = __importDefault(__nccwpck_require__(1017));
+const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
+const transformRemappings_1 = __nccwpck_require__(7616);
+const copySolidityFiles = (baseDir, filesDir, destinationDir) => {
+    const filesDestination = `${destinationDir}/${filesDir}`;
+    const abiDestination = `${destinationDir}/abi`;
+    // List all of the solidity files on the input directory
+    const filesGlob = `${filesDir}/**/*.sol`;
+    (0, glob_1.default)(filesGlob, (err, filesPaths) => {
+        if (err)
+            throw err;
+        for (const filePath of filesPaths) {
+            const file = fs_extra_1.default.readFileSync(filePath, 'utf8');
+            const relativeFile = (0, transformRemappings_1.transformRemappings)(file);
+            // Copy the file to the destination directory
+            const relativeFilePath = filePath.substring(filesDir.length + 1);
+            fs_extra_1.default.outputFileSync(path_1.default.join(filesDestination, relativeFilePath), relativeFile);
+            console.log(`Copied ${relativeFilePath} to ${filesDestination}`);
+            // Copy the abi to the export directory using the same file name
+            const fileName = filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
+            fs_extra_1.default.copySync(`${baseDir}/${fileName}.sol/${fileName}.json`, `${abiDestination}/${fileName}.json`);
+            console.log(`Copied ${fileName}.json to ${abiDestination}`);
+        }
+        console.log(`Copied ${filesPaths.length} interfaces and ABIs`);
+    });
+};
+exports.copySolidityFiles = copySolidityFiles;
 
 
 /***/ }),
@@ -27,97 +69,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createPackage = void 0;
-const glob_1 = __importDefault(__nccwpck_require__(1957));
-const path_1 = __importDefault(__nccwpck_require__(1017));
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const child_process_1 = __nccwpck_require__(2081);
+const copySolidityFiles_1 = __nccwpck_require__(9676);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
-const transformRemappings_1 = __nccwpck_require__(7616);
 const constants_1 = __nccwpck_require__(5105);
-const createPackage = (exportDir, outDir, interfacesDir, contractsExportDir, packageJson, typingType) => {
-    const abiDestination = `${exportDir}/abi`;
-    const contractsDestination = `${exportDir}/${contractsExportDir}`;
-    const interfacesDestination = `${exportDir}/${interfacesDir}`;
-    const interfacesGlob = `${interfacesDir}/**/*.sol`;
-    const contractsGlob = `${contractsExportDir}/**/*.sol`;
-    // empty export directory
-    fs_extra_1.default.emptyDirSync(exportDir);
-    fs_extra_1.default.writeJsonSync(`${exportDir}/package.json`, packageJson, { spaces: 4 });
-    let interfaceName = '';
-    // list all of the solidity interfaces
-    (0, glob_1.default)(interfacesGlob, (err, interfacePaths) => {
-        if (err)
-            throw err;
-        // for each interface path
-        for (const interfacePath of interfacePaths) {
-            const interfaceFile = fs_extra_1.default.readFileSync(interfacePath, 'utf8');
-            const relativeInterfaceFile = (0, transformRemappings_1.transformRemappings)(interfaceFile);
-            const contractPath = interfacePath.substring(interfacesDir.length + 1);
-            fs_extra_1.default.outputFileSync(path_1.default.join(interfacesDestination, contractPath), relativeInterfaceFile);
-            // get the interface name
-            interfaceName = interfacePath.substring(interfacePath.lastIndexOf('/') + 1, interfacePath.lastIndexOf('.'));
-            // copy interface abi to the export directory
-            fs_extra_1.default.copySync(`${outDir}/${interfaceName}.sol/${interfaceName}.json`, `${abiDestination}/${interfaceName}.json`);
-        }
-        console.log(`Copied ${interfacePaths.length} interfaces`);
-        if (typingType === constants_1.TypingType.CONTRACTS) {
-            (0, glob_1.default)(contractsGlob, (err, contractPaths) => {
-                if (err)
-                    throw err;
-                for (const contractPath of contractPaths) {
-                    const contractFile = fs_extra_1.default.readFileSync(contractPath, 'utf8');
-                    const relativeContractFile = (0, transformRemappings_1.transformRemappings)(contractFile);
-                    const relativeContractPath = contractPath.substring(contractsExportDir.length + 1);
-                    fs_extra_1.default.outputFileSync(path_1.default.join(contractsDestination, relativeContractPath), relativeContractFile);
-                    const contractName = contractPath.substring(contractPath.lastIndexOf('/') + 1, contractPath.lastIndexOf('.'));
-                    fs_extra_1.default.copySync(`${outDir}/${contractName}.sol/${contractName}.json`, `${abiDestination}/${contractName}.json`);
-                }
-                console.log(`Copied ${contractPaths.length} contracts`);
-            });
-        }
-        (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, typingType, exportDir, interfaceName);
-        // install package dependencies
-        console.log(`Installing abi dependencies`);
-        (0, child_process_1.execSync)(`cd ${exportDir} && yarn`);
-    });
-};
-exports.createPackage = createPackage;
-
-
-/***/ }),
-
-/***/ 3360:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createPackages = void 0;
-const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
-const createPackage_1 = __nccwpck_require__(3393);
-const child_process_1 = __nccwpck_require__(2081);
-const createPackages = (outDir, typingType, packageName, destinationDir, interfacesDir, contractsDir) => {
-    // Empty export directory
+const createPackage = (outDir, interfacesDir, contractsDir, packageName, exportType) => {
+    // Empty export destination directory
+    const destinationDir = `export/${packageName}-${exportType}`;
     fs_extra_1.default.emptyDirSync(destinationDir);
     console.log('Installing dependencies');
     (0, child_process_1.execSync)('yarn');
+    // Read and copy the input package.json
+    const inputPackageJson = fs_extra_1.default.readJsonSync('./package.json');
+    if (!inputPackageJson)
+        throw new Error('package.json not found');
     // Create custom package.json in the export directory
-    const wholePackage = fs_extra_1.default.readJsonSync('./package.json');
-    // Checks if exist
-    if (!wholePackage)
-        return;
     const packageJson = {
         name: packageName,
-        version: wholePackage.version,
-        dependencies: Object.assign({}, wholePackage.dependencies),
+        version: inputPackageJson.version,
+        dependencies: Object.assign({}, inputPackageJson.dependencies),
     };
-    // Create package
-    (0, createPackage_1.createPackage)(destinationDir, outDir, interfacesDir, contractsDir, packageJson, typingType);
+    fs_extra_1.default.writeJsonSync(`${destinationDir}/package.json`, packageJson, { spaces: 4 });
+    // Copy the interfaces and their ABIs
+    (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
+    // Copy the contracts only if the export type is contracts
+    if (exportType === constants_1.ExportType.CONTRACTS)
+        (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
+    (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportType, destinationDir);
+    console.log(`Created README and LICENSE`);
+    // Install package dependencies
+    console.log(`Installing dependencies`);
+    (0, child_process_1.execSync)(`cd ${destinationDir} && yarn`);
 };
-exports.createPackages = createPackages;
+exports.createPackage = createPackage;
 
 
 /***/ }),
@@ -134,13 +119,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createReadmeAndLicense = void 0;
 const fs_extra_1 = __importDefault(__nccwpck_require__(5630));
 const types_1 = __nccwpck_require__(8164);
-const createReadmeAndLicense = (packageName, typingType, exportDir, sampleInterfaceName) => {
+const createReadmeAndLicense = (packageName, exportType, exportDir) => {
     const readmeContent = `
   [![npm version](https://img.shields.io/npm/v/${packageName}/latest.svg)](https://www.npmjs.com/package/${packageName}/v/latest)
 
   # ${packageName}
 
-  ${packageName} offers support for ${types_1.publicTypeLabels[typingType]} typing for seamless interactions with smart contracts. 
+  ${packageName} offers support for ${types_1.publicTypeLabels[exportType]} typing for seamless interactions with smart contracts. 
   Integrate these interfaces effortlessly into your projects.
 
   ## Installation
@@ -163,7 +148,8 @@ const createReadmeAndLicense = (packageName, typingType, exportDir, sampleInterf
   This is an example of how you can import an interface:
 
   \`\`\`typescript
-  import { ${sampleInterfaceName} } from '${packageName}';
+  import { ISomeInterface } from '${packageName}';
+  import { SomeContract } from '${packageName}';
   \`\`\`
 
   And then you can interact with it in the way you need.
@@ -232,7 +218,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const createPackages_1 = __nccwpck_require__(3360);
+const createPackage_1 = __nccwpck_require__(3393);
 const constants_1 = __nccwpck_require__(5105);
 // eslint-disable-next-line @typescript-eslint/require-await
 function run() {
@@ -240,16 +226,16 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             core.debug(`Parsing inputs`);
-            const outDir = core.getInput('out_dir');
-            const typingType = core.getInput('typing_type');
             const packageName = core.getInput('package_name');
-            const destinationDir = core.getInput('destination_dir');
-            const interfacesDir = core.getInput('interfaces_dir');
-            const contractsDir = core.getInput('contracts_dir') || '';
-            if (!Object.values(constants_1.TypingType).includes(typingType)) {
-                throw new Error(`Invalid input for typing_type. Valid inputs are: ${Object.values(constants_1.TypingType).join(', ')}`);
+            const outDir = core.getInput('out');
+            const interfacesDir = core.getInput('interfaces');
+            const contractsDir = core.getInput('contracts') || '';
+            const exportType = core.getInput('export_type');
+            if (!Object.values(constants_1.ExportType).includes(exportType)) {
+                throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
             }
-            (0, createPackages_1.createPackages)(outDir, typingType, packageName, destinationDir, interfacesDir, contractsDir);
+            core.debug(`Creating package`);
+            (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, packageName, exportType);
             core.setOutput('passed', true);
         }
         catch (e) {
@@ -340,8 +326,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.publicTypeLabels = void 0;
 const constants_1 = __nccwpck_require__(5105);
 exports.publicTypeLabels = {
-    [constants_1.TypingType.ABI]: 'ABIs',
-    [constants_1.TypingType.CONTRACTS]: 'ABIs and contracts',
+    [constants_1.ExportType.INTERFACES]: 'ABIs and interfaces',
+    [constants_1.ExportType.CONTRACTS]: 'ABIs, interfaces and contracts',
 };
 
 

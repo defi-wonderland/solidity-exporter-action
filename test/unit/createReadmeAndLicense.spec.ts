@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { createReadmeAndLicense } from '../../src/createReadmeAndLicense';
 import fse from 'fs-extra';
-import { TypingType } from '../../src/constants';
+import { ExportType } from '../../src/constants';
 
 describe('createReadmeAndLicense', () => {
   const exportDir = './test/tmp';
@@ -16,8 +16,7 @@ describe('createReadmeAndLicense', () => {
 
   it('should create abi README.MD file with correct package name', () => {
     const packageName = 'test-package';
-    const sampleInterface = 'ISampleInterface';
-    createReadmeAndLicense(packageName, TypingType.ABI, exportDir, sampleInterface);
+    createReadmeAndLicense(packageName, ExportType.INTERFACES, exportDir);
 
     const readmePath = `${exportDir}/README.MD`;
     expect(fse.existsSync(readmePath)).to.be.true;
@@ -28,8 +27,7 @@ describe('createReadmeAndLicense', () => {
 
   it('should create ethers v6 README.MD file with correct package name', () => {
     const packageName = 'test-package';
-    const sampleInterface = 'ISampleInterface';
-    createReadmeAndLicense(packageName, TypingType.ABI, exportDir, sampleInterface);
+    createReadmeAndLicense(packageName, ExportType.INTERFACES, exportDir);
 
     const readmePath = `${exportDir}/README.MD`;
     expect(fse.existsSync(readmePath)).to.be.true;
@@ -38,22 +36,9 @@ describe('createReadmeAndLicense', () => {
     expect(readmeContent).to.include(`# ${packageName}`);
   });
 
-  it('should add the sample interface on the README.MD file', () => {
-    const packageName = 'test-package';
-    const sampleInterface = 'ISampleInterface';
-    createReadmeAndLicense(packageName, TypingType.ABI, exportDir, sampleInterface);
-
-    const readmePath = `${exportDir}/README.MD`;
-    expect(fse.existsSync(readmePath)).to.be.true;
-
-    const readmeContent = fse.readFileSync(readmePath, 'utf8');
-    expect(readmeContent).to.include(`${sampleInterface}`);
-  });
-
   it('should create web3 README.MD file with correct package name', () => {
     const packageName = 'test-package';
-    const sampleInterface = 'ISampleInterface';
-    createReadmeAndLicense(packageName, TypingType.CONTRACTS, exportDir, sampleInterface);
+    createReadmeAndLicense(packageName, ExportType.CONTRACTS, exportDir);
 
     const readmePath = `${exportDir}/README.MD`;
     expect(fse.existsSync(readmePath)).to.be.true;
@@ -64,8 +49,7 @@ describe('createReadmeAndLicense', () => {
 
   it('should create LICENSE file if it exists', () => {
     const packageName = 'test-package';
-    const sampleInterface = 'ISampleInterface';
-    createReadmeAndLicense(packageName, TypingType.CONTRACTS, exportDir, sampleInterface);
+    createReadmeAndLicense(packageName, ExportType.CONTRACTS, exportDir);
 
     const licenseFilePath = `${exportDir}/LICENSE`;
     expect(fse.existsSync(licenseFilePath)).to.be.true;

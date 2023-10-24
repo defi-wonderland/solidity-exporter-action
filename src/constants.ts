@@ -1,4 +1,4 @@
-export enum TypingType {
-  ABI = 'abi',
+export enum ExportType {
+  INTERFACES = 'interfaces',
   CONTRACTS = 'contracts',
 }

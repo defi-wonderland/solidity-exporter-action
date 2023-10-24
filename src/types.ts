@@ -1,4 +1,4 @@
-import { TypingType } from './constants';
+import { ExportType } from './constants';
 
 export interface PackageJson {
   name: string;
@@ -6,7 +6,7 @@ export interface PackageJson {
   dependencies: Record<string, string>;
 }
 
-export const publicTypeLabels: Record<TypingType, string> = {
-  [TypingType.ABI]: 'ABIs',
-  [TypingType.CONTRACTS]: 'ABIs and contracts',
+export const publicTypeLabels: Record<ExportType, string> = {
+  [ExportType.INTERFACES]: 'ABIs and interfaces',
+  [ExportType.CONTRACTS]: 'ABIs, interfaces and contracts',
 };
