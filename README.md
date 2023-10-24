@@ -4,18 +4,17 @@
 
 # Interface Exporter Action
 
-Interface Exporter Action automates the process of extracting TypeScript interfaces from Solidity contracts and provides compatibility with TypeChain. Developers can seamlessly generate typings with only a few lines of yaml code.
+Interface Exporter Action automates the process of extracting TypeScript interfaces from Solidity contracts and interfaces and provides compatibility with TypeChain. Developers can seamlessly generate typings with only a few lines of yaml code.
 
 ## Action Inputs
 
-| Input           | Description                                                          | Default        | Options        |
-| --------------- | -------------------------------------------------------------------- | -------------- | -------------- |
-| out_dir         | The path to the directory where contracts are built                  | **Required**   |                |
-| interfaces_dir  | The path to the directory where the interfaces are located           | src/interfaces |                |
-| typing_type     | Typing option which NPM package will be compatible                   | **Required**   | abi, contracts |
-| package_name    | Chosen name for the exported NPM package                             | **Required**   |                |
-| destination_dir | The path to the destination directory where the NPM will be exported | **Required**   |                |
-| contracts_dir   | The path to the directory where the contracts are located            | **Optional**   |                |
+| Input        | Description                                                | Default        | Options               |
+| ------------ | ---------------------------------------------------------- | -------------- | --------------------- |
+| package_name | Chosen name for the exported NPM package                   | **Required**   |                       |
+| out          | The path to the directory where contracts are built        | out            |                       |
+| interfaces   | The path to the directory where the interfaces are located | src/interfaces |                       |
+| contracts    | The path to the directory where the contracts are located  | src/contracts  |                       |
+| export_type  | Export option which NPM package will be compatible         | interfaces     | interfaces, contracts |
 
 ## Action Outputs
 
@@ -27,65 +26,57 @@ Interface Exporter Action automates the process of extracting TypeScript interfa
 
 ## Example
 
-Interface Exporter Action generates an NPM package with your interfaces ABIs:
+Interface Exporter Action generates NPM packages with your interfaces and contracts ABIs using a matrix of arguments with both and then publishes them to NPM:
 
 ```yaml
-- name: Use Node.js
-  uses: actions/setup-node@v3
-  with:
-    node-version: 16
-    registry-url: "https://registry.npmjs.org"
+name: Export And Publish Interfaces And Contracts
 
-- name: Install dependencies
-  run: yarn --frozen-lockfile
+on: [push]
 
-- name: Build project and generate out directory
-  run: yarn build
+jobs:
+  export:
+    name: Generate Interfaces And Contracts
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        export_type: ['interfaces', 'contracts']
 
-- name: Export interfaces for abi compatibility
-  uses: defi-wonderland/interface-exporter-action@v1
-  with:
-    out_dir: ./out
-    interfaces_dir: src/interfaces
-    typing_type: abi
-    package_name: @my-cool-protocol/core-interfaces-abi
-    destination_dir: abi-project
+    steps:
+      - uses: actions/checkout@v3
 
-- name: Publish
-  run: cd abi-project && npm publish --access public
-  env:
-    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
 
-Interface Exporter Action generates an NPM package with your contracts:
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: 'https://registry.npmjs.org'
 
-```yaml
-- name: Use Node.js
-  uses: actions/setup-node@v3
-  with:
-    node-version: 16
-    registry-url: "https://registry.npmjs.org"
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
 
-- name: Install dependencies
-  run: yarn --frozen-lockfile
+      - name: Build project and generate out directory
+        run: yarn build
 
-- name: Build project and generate out directory
-  run: yarn build
+      - name: Update version
+        run: yarn version --new-version "0.0.0-${GITHUB_SHA::8}" --no-git-tag-version
 
-- name: Export contracts, abis and interfaces
-  uses: defi-wonderland/interface-exporter-action@v1
-  with:
-    out_dir: ./out
-    interfaces_dir: src/interfaces
-    contracts_dir:  src/contracts
-    typing_type: contracts
-    package_name: @my-cool-protocol/core-interfaces-abi
-    destination_dir: abi-project
+      - name: Export Interfaces - ${{ matrix.export_type }}
+        uses: defi-wonderland/interface-exporter-action@v1
+        with:
+          package_name: '@defi-wonderland/interfaces-exporter-action-test-${{ matrix.export_type }}'
+          out: 'out'
+          interfaces: 'solidity/interfaces'
+          contracts: 'solidity/contracts'
+          export_type: '${{ matrix.export_type }}'
 
-- name: Publish
-  run: cd abi-project && npm publish --access public
-  env:
-    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish
+        run: cd export/@defi-wonderland/interfaces-exporter-action-test-${{ matrix.export_type }} && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 ```
 
 # Development
@@ -93,12 +84,20 @@ Interface Exporter Action generates an NPM package with your contracts:
 Install the dependencies
 
 ```bash
+// Using yarn
+yarn
+
+// Using npm
 npm install
 ```
 
 Run the tests
 
 ```bash
+// Using yarn
+yarn test
+
+// Using npm
 npm test
 ```
 
