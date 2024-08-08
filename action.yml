@@ -19,7 +19,7 @@ inputs:
     required: false
     default: 'solidity/contracts'
   export_type:
-    description: '`interface` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts, interfaces and their ABIs as well'
+    description: '`interface` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts, libraries, interfaces and their ABIs as well'
     required: false
     default: 'interfaces'
 
