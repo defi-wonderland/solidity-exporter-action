@@ -40,8 +40,8 @@ export const createPackage = (
 
   // Copy the contracts and libraries only if the export type is all
   if (exportType === ExportType.ALL) {
-    (contractsDir != '') && copySolidityFiles(outDir, contractsDir, destinationDir);
-    (librariesDir != '') && copySolidityFiles(outDir, librariesDir, destinationDir);
+    if (contractsDir != '') copySolidityFiles(outDir, contractsDir, destinationDir);
+    if (librariesDir != '') copySolidityFiles(outDir, librariesDir, destinationDir);
   }
 
   createReadmeAndLicense(packageJson.name, exportType, destinationDir);

@@ -97,8 +97,10 @@ const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packag
     (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
     // Copy the contracts and libraries only if the export type is all
     if (exportType === constants_1.ExportType.ALL) {
-        (contractsDir != '') && (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
-        (librariesDir != '') && (0, copySolidityFiles_1.copySolidityFiles)(outDir, librariesDir, destinationDir);
+        if (contractsDir != '')
+            (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
+        if (librariesDir != '')
+            (0, copySolidityFiles_1.copySolidityFiles)(outDir, librariesDir, destinationDir);
     }
     (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportType, destinationDir);
     console.log(`Created README and LICENSE`);
