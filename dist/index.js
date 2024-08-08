@@ -11,7 +11,7 @@ exports.ExportType = void 0;
 var ExportType;
 (function (ExportType) {
     ExportType["INTERFACES"] = "interfaces";
-    ExportType["CONTRACTS"] = "contracts";
+    ExportType["ALL"] = "all";
 })(ExportType || (exports.ExportType = ExportType = {}));
 
 
@@ -74,9 +74,11 @@ const child_process_1 = __nccwpck_require__(2081);
 const copySolidityFiles_1 = __nccwpck_require__(9676);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const constants_1 = __nccwpck_require__(5105);
-const createPackage = (outDir, interfacesDir, contractsDir, packageName, exportType) => {
+const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packageName, exportType) => {
+    const exportName = exportType === constants_1.ExportType.INTERFACES ? '-interfaces' : '';
     // Empty export destination directory
-    const destinationDir = `export/${packageName}-${exportType}`;
+    const packageFullName = `${packageName}${exportName}`;
+    const destinationDir = `export/${packageFullName}`;
     fs_extra_1.default.emptyDirSync(destinationDir);
     console.log('Installing dependencies');
     (0, child_process_1.execSync)('yarn');
@@ -86,16 +88,20 @@ const createPackage = (outDir, interfacesDir, contractsDir, packageName, exportT
         throw new Error('package.json not found');
     // Create custom package.json in the export directory
     const packageJson = {
-        name: packageName,
+        name: packageFullName,
         version: inputPackageJson.version,
         dependencies: Object.assign({}, inputPackageJson.dependencies),
     };
     fs_extra_1.default.writeJsonSync(`${destinationDir}/package.json`, packageJson, { spaces: 4 });
     // Copy the interfaces and their ABIs
     (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
-    // Copy the contracts only if the export type is contracts
-    if (exportType === constants_1.ExportType.CONTRACTS)
-        (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
+    // Copy the contracts and libraries only if the export type is all
+    if (exportType === constants_1.ExportType.ALL) {
+        if (contractsDir != '')
+            (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
+        if (librariesDir != '')
+            (0, copySolidityFiles_1.copySolidityFiles)(outDir, librariesDir, destinationDir);
+    }
     (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportType, destinationDir);
     console.log(`Created README and LICENSE`);
     // Install package dependencies
@@ -229,13 +235,14 @@ function run() {
             const packageName = core.getInput('package_name');
             const outDir = core.getInput('out');
             const interfacesDir = core.getInput('interfaces');
-            const contractsDir = core.getInput('contracts') || '';
+            const contractsDir = core.getInput('contracts');
+            const librariesDir = core.getInput('libraries');
             const exportType = core.getInput('export_type');
             if (!Object.values(constants_1.ExportType).includes(exportType)) {
                 throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
             }
             core.debug(`Creating package`);
-            (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, packageName, exportType);
+            (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, librariesDir, packageName, exportType);
             core.setOutput('passed', true);
         }
         catch (e) {
@@ -327,7 +334,7 @@ exports.publicTypeLabels = void 0;
 const constants_1 = __nccwpck_require__(5105);
 exports.publicTypeLabels = {
     [constants_1.ExportType.INTERFACES]: 'ABIs and interfaces',
-    [constants_1.ExportType.CONTRACTS]: 'ABIs, interfaces and contracts',
+    [constants_1.ExportType.ALL]: 'ABIs, interfaces, contracts and libraries',
 };
 
 

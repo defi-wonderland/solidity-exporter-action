@@ -8,5 +8,5 @@ export interface PackageJson {
 
 export const publicTypeLabels: Record<ExportType, string> = {
   [ExportType.INTERFACES]: 'ABIs and interfaces',
-  [ExportType.CONTRACTS]: 'ABIs, interfaces and contracts',
+  [ExportType.ALL]: 'ABIs, interfaces, contracts and libraries',
 };

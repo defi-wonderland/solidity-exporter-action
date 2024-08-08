@@ -38,7 +38,7 @@ describe('createReadmeAndLicense', () => {
 
   it('should create web3 README.MD file with correct package name', () => {
     const packageName = 'test-package';
-    createReadmeAndLicense(packageName, ExportType.CONTRACTS, exportDir);
+    createReadmeAndLicense(packageName, ExportType.ALL, exportDir);
 
     const readmePath = `${exportDir}/README.MD`;
     expect(fse.existsSync(readmePath)).to.be.true;
@@ -49,7 +49,7 @@ describe('createReadmeAndLicense', () => {
 
   it('should create LICENSE file if it exists', () => {
     const packageName = 'test-package';
-    createReadmeAndLicense(packageName, ExportType.CONTRACTS, exportDir);
+    createReadmeAndLicense(packageName, ExportType.ALL, exportDir);
 
     const licenseFilePath = `${exportDir}/LICENSE`;
     expect(fse.existsSync(licenseFilePath)).to.be.true;

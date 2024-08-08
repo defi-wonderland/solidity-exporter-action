@@ -1,6 +1,6 @@
 {
   "name": "solidity-exporter-action",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "An action to generate npm packages based on Solidity contracts and interfaces",
   "main": "lib/main.js",
   "scripts": {

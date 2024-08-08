@@ -9,11 +9,14 @@ export const createPackage = (
   outDir: string,
   interfacesDir: string,
   contractsDir: string,
+  librariesDir: string,
   packageName: string,
   exportType: ExportType,
 ) => {
+  const exportName = exportType === ExportType.INTERFACES ? '-interfaces' : '';
   // Empty export destination directory
-  const destinationDir = `export/${packageName}-${exportType}`;
+  const packageFullName = `${packageName}${exportName}`;
+  const destinationDir = `export/${packageFullName}`;
   fse.emptyDirSync(destinationDir);
 
   console.log('Installing dependencies');
@@ -24,7 +27,7 @@ export const createPackage = (
   if (!inputPackageJson) throw new Error('package.json not found');
   // Create custom package.json in the export directory
   const packageJson: PackageJson = {
-    name: packageName,
+    name: packageFullName,
     version: inputPackageJson.version,
     dependencies: {
       ...inputPackageJson.dependencies,
@@ -35,8 +38,11 @@ export const createPackage = (
   // Copy the interfaces and their ABIs
   copySolidityFiles(outDir, interfacesDir, destinationDir);
 
-  // Copy the contracts only if the export type is contracts
-  if (exportType === ExportType.CONTRACTS) copySolidityFiles(outDir, contractsDir, destinationDir);
+  // Copy the contracts and libraries only if the export type is all
+  if (exportType === ExportType.ALL) {
+    if (contractsDir != '') copySolidityFiles(outDir, contractsDir, destinationDir);
+    if (librariesDir != '') copySolidityFiles(outDir, librariesDir, destinationDir);
+  }
 
   createReadmeAndLicense(packageJson.name, exportType, destinationDir);
   console.log(`Created README and LICENSE`);
