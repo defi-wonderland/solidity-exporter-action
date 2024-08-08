@@ -27,5 +27,5 @@ outputs:
   exported:
     description: 'boolean describing package was exported successfully or not'
 runs:
-  using: 'node18'
+  using: 'node20'
   main: 'dist/index.js'
