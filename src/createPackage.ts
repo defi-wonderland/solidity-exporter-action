@@ -13,8 +13,9 @@ export const createPackage = (
   packageName: string,
   exportType: ExportType,
 ) => {
+  const exportName = exportType === ExportType.INTERFACES ? '-interfaces' : '';
   // Empty export destination directory
-  const destinationDir = `export/${packageName}-${exportType}`;
+  const destinationDir = `export/${packageName}${exportName}`;
   fse.emptyDirSync(destinationDir);
 
   console.log('Installing dependencies');

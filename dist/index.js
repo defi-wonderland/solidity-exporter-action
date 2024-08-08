@@ -75,8 +75,9 @@ const copySolidityFiles_1 = __nccwpck_require__(9676);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const constants_1 = __nccwpck_require__(5105);
 const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packageName, exportType) => {
+    const exportName = exportType === constants_1.ExportType.INTERFACES ? '-interfaces' : '';
     // Empty export destination directory
-    const destinationDir = `export/${packageName}-${exportType}`;
+    const destinationDir = `export/${packageName}${exportName}`;
     fs_extra_1.default.emptyDirSync(destinationDir);
     console.log('Installing dependencies');
     (0, child_process_1.execSync)('yarn');
