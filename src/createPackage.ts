@@ -9,6 +9,7 @@ export const createPackage = (
   outDir: string,
   interfacesDir: string,
   contractsDir: string,
+  libDir: string,
   packageName: string,
   exportType: ExportType,
 ) => {
@@ -35,8 +36,11 @@ export const createPackage = (
   // Copy the interfaces and their ABIs
   copySolidityFiles(outDir, interfacesDir, destinationDir);
 
-  // Copy the contracts only if the export type is contracts
-  if (exportType === ExportType.CONTRACTS) copySolidityFiles(outDir, contractsDir, destinationDir);
+  // Copy the contracts and libraries only if the export type is contracts
+  if (exportType === ExportType.CONTRACTS) {
+    copySolidityFiles(outDir, contractsDir, destinationDir);
+    copySolidityFiles(outDir, libDir, destinationDir);
+  }
 
   createReadmeAndLicense(packageJson.name, exportType, destinationDir);
   console.log(`Created README and LICENSE`);

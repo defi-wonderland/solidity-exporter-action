@@ -74,7 +74,7 @@ const child_process_1 = __nccwpck_require__(2081);
 const copySolidityFiles_1 = __nccwpck_require__(9676);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const constants_1 = __nccwpck_require__(5105);
-const createPackage = (outDir, interfacesDir, contractsDir, packageName, exportType) => {
+const createPackage = (outDir, interfacesDir, contractsDir, libDir, packageName, exportType) => {
     // Empty export destination directory
     const destinationDir = `export/${packageName}-${exportType}`;
     fs_extra_1.default.emptyDirSync(destinationDir);
@@ -93,9 +93,11 @@ const createPackage = (outDir, interfacesDir, contractsDir, packageName, exportT
     fs_extra_1.default.writeJsonSync(`${destinationDir}/package.json`, packageJson, { spaces: 4 });
     // Copy the interfaces and their ABIs
     (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
-    // Copy the contracts only if the export type is contracts
-    if (exportType === constants_1.ExportType.CONTRACTS)
+    // Copy the contracts and libraries only if the export type is contracts
+    if (exportType === constants_1.ExportType.CONTRACTS) {
         (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
+        (0, copySolidityFiles_1.copySolidityFiles)(outDir, libDir, destinationDir);
+    }
     (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportType, destinationDir);
     console.log(`Created README and LICENSE`);
     // Install package dependencies
@@ -230,12 +232,13 @@ function run() {
             const outDir = core.getInput('out');
             const interfacesDir = core.getInput('interfaces');
             const contractsDir = core.getInput('contracts') || '';
+            const libsDir = core.getInput('libs') || '';
             const exportType = core.getInput('export_type');
             if (!Object.values(constants_1.ExportType).includes(exportType)) {
                 throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
             }
             core.debug(`Creating package`);
-            (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, packageName, exportType);
+            (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, libsDir, packageName, exportType);
             core.setOutput('passed', true);
         }
         catch (e) {
