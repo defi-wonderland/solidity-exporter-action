@@ -232,13 +232,13 @@ function run() {
             const outDir = core.getInput('out');
             const interfacesDir = core.getInput('interfaces');
             const contractsDir = core.getInput('contracts') || '';
-            const libsDir = core.getInput('libs') || '';
+            const librariesDir = core.getInput('libraries') || '';
             const exportType = core.getInput('export_type');
             if (!Object.values(constants_1.ExportType).includes(exportType)) {
                 throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
             }
             core.debug(`Creating package`);
-            (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, libsDir, packageName, exportType);
+            (0, createPackage_1.createPackage)(outDir, interfacesDir, contractsDir, librariesDir, packageName, exportType);
             core.setOutput('passed', true);
         }
         catch (e) {
