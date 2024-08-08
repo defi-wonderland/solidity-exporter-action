@@ -15,7 +15,7 @@ Solidity Exporter Action automates the process of extracting TypeScript interfac
 | interfaces   | path to the interfaces directory                                                                                                         | src/interfaces |                       |
 | contracts    | path to the contracts directory                                                                                                          | src/contracts  |                       |
 | libraries    | path to the libraries directory                                                                                                          | src/libraries  |                       |
-| export_type  | `interface` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts, libraries, interfaces and their ABIs as well | interfaces     | interfaces, contracts |
+| export_type  | `interface` for exporting only the interfaces and their ABIs, `all` for exporting the contracts, libraries, interfaces and their ABIs as well | interfaces     | interfaces, all |
 
 ## Action Outputs
 
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        export_type: ['interfaces', 'contracts']
+        export_type: ['interfaces', 'all']
 
     steps:
       - uses: actions/checkout@v3

@@ -11,7 +11,7 @@ exports.ExportType = void 0;
 var ExportType;
 (function (ExportType) {
     ExportType["INTERFACES"] = "interfaces";
-    ExportType["CONTRACTS"] = "contracts";
+    ExportType["ALL"] = "all";
 })(ExportType || (exports.ExportType = ExportType = {}));
 
 
@@ -94,14 +94,8 @@ const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packag
     // Copy the interfaces and their ABIs
     (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
     // Copy the contracts and libraries only if the export type is contracts
-    if (exportType === constants_1.ExportType.CONTRACTS) {
-        // Break the execution in case contractsDir is not defined
-        if (contractsDir == '') {
-            console.error('contractsDir is not defined while exportType is CONTRACTS');
-            throw new Error('contractsDir is not defined while exportType is CONTRACTS');
-        }
-        ;
-        (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
+    if (exportType === constants_1.ExportType.ALL) {
+        (contractsDir != '') && (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
         (librariesDir != '') && (0, copySolidityFiles_1.copySolidityFiles)(outDir, librariesDir, destinationDir);
     }
     (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportType, destinationDir);
@@ -336,7 +330,7 @@ exports.publicTypeLabels = void 0;
 const constants_1 = __nccwpck_require__(5105);
 exports.publicTypeLabels = {
     [constants_1.ExportType.INTERFACES]: 'ABIs and interfaces',
-    [constants_1.ExportType.CONTRACTS]: 'ABIs, interfaces and contracts',
+    [constants_1.ExportType.ALL]: 'ABIs, interfaces, contracts and libraries',
 };
 
 
