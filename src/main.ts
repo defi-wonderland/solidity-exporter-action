@@ -9,8 +9,8 @@ async function run(): Promise<void> {
     const packageName = core.getInput('package_name');
     const outDir = core.getInput('out');
     const interfacesDir = core.getInput('interfaces');
-    const contractsDir = core.getInput('contracts') || '';
-    const librariesDir = core.getInput('libraries') || '';
+    const contractsDir = core.getInput('contracts');
+    const librariesDir = core.getInput('libraries');
     const exportType = core.getInput('export_type') as ExportType;
 
     if (!Object.values(ExportType).includes(exportType)) {

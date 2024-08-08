@@ -9,7 +9,7 @@ export const createPackage = (
   outDir: string,
   interfacesDir: string,
   contractsDir: string,
-  libDir: string,
+  librariesDir: string,
   packageName: string,
   exportType: ExportType,
 ) => {
@@ -38,8 +38,13 @@ export const createPackage = (
 
   // Copy the contracts and libraries only if the export type is contracts
   if (exportType === ExportType.CONTRACTS) {
+    // Break the execution in case contractsDir is not defined
+    if(contractsDir == '') {
+      console.error('contractsDir is not defined while exportType is CONTRACTS');
+      throw new Error('contractsDir is not defined while exportType is CONTRACTS');
+    };
     copySolidityFiles(outDir, contractsDir, destinationDir);
-    copySolidityFiles(outDir, libDir, destinationDir);
+    (librariesDir != '') && copySolidityFiles(outDir, librariesDir, destinationDir);
   }
 
   createReadmeAndLicense(packageJson.name, exportType, destinationDir);

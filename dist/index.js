@@ -74,7 +74,7 @@ const child_process_1 = __nccwpck_require__(2081);
 const copySolidityFiles_1 = __nccwpck_require__(9676);
 const createReadmeAndLicense_1 = __nccwpck_require__(161);
 const constants_1 = __nccwpck_require__(5105);
-const createPackage = (outDir, interfacesDir, contractsDir, libDir, packageName, exportType) => {
+const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packageName, exportType) => {
     // Empty export destination directory
     const destinationDir = `export/${packageName}-${exportType}`;
     fs_extra_1.default.emptyDirSync(destinationDir);
@@ -95,8 +95,14 @@ const createPackage = (outDir, interfacesDir, contractsDir, libDir, packageName,
     (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
     // Copy the contracts and libraries only if the export type is contracts
     if (exportType === constants_1.ExportType.CONTRACTS) {
+        // Break the execution in case contractsDir is not defined
+        if (contractsDir == '') {
+            console.error('contractsDir is not defined while exportType is CONTRACTS');
+            throw new Error('contractsDir is not defined while exportType is CONTRACTS');
+        }
+        ;
         (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
-        (0, copySolidityFiles_1.copySolidityFiles)(outDir, libDir, destinationDir);
+        (librariesDir != '') && (0, copySolidityFiles_1.copySolidityFiles)(outDir, librariesDir, destinationDir);
     }
     (0, createReadmeAndLicense_1.createReadmeAndLicense)(packageJson.name, exportType, destinationDir);
     console.log(`Created README and LICENSE`);
@@ -231,8 +237,8 @@ function run() {
             const packageName = core.getInput('package_name');
             const outDir = core.getInput('out');
             const interfacesDir = core.getInput('interfaces');
-            const contractsDir = core.getInput('contracts') || '';
-            const librariesDir = core.getInput('libraries') || '';
+            const contractsDir = core.getInput('contracts');
+            const librariesDir = core.getInput('libraries');
             const exportType = core.getInput('export_type');
             if (!Object.values(constants_1.ExportType).includes(exportType)) {
                 throw new Error(`Invalid input for export_type. Valid inputs are: ${Object.values(constants_1.ExportType).join(', ')}`);
