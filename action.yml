@@ -1,5 +1,5 @@
 name: 'Solidity exporter action'
-description: 'An action to generate npm packages based on Solidity interfaces and contracts'
+description: 'An action to generate npm packages based on Solidity interfaces, contracts and libraries'
 author: 'Wonderland'
 
 inputs:
@@ -18,6 +18,10 @@ inputs:
     description: 'path to the contracts directory'
     required: false
     default: 'solidity/contracts'
+  libraries:
+    description: 'path to the libraries directory'
+    required: false
+    default: 'solidity/libraries'
   export_type:
     description: '`interface` for exporting only the interfaces and their ABIs, `contracts` for exporting the contracts, libraries, interfaces and their ABIs as well'
     required: false
