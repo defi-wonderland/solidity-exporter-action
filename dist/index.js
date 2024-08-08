@@ -77,7 +77,8 @@ const constants_1 = __nccwpck_require__(5105);
 const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packageName, exportType) => {
     const exportName = exportType === constants_1.ExportType.INTERFACES ? '-interfaces' : '';
     // Empty export destination directory
-    const destinationDir = `export/${packageName}${exportName}`;
+    const packageFullName = `${packageName}${exportName}`;
+    const destinationDir = `export/${packageFullName}`;
     fs_extra_1.default.emptyDirSync(destinationDir);
     console.log('Installing dependencies');
     (0, child_process_1.execSync)('yarn');
@@ -87,7 +88,7 @@ const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packag
         throw new Error('package.json not found');
     // Create custom package.json in the export directory
     const packageJson = {
-        name: packageName,
+        name: packageFullName,
         version: inputPackageJson.version,
         dependencies: Object.assign({}, inputPackageJson.dependencies),
     };

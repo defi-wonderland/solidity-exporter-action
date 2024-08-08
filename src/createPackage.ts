@@ -15,7 +15,8 @@ export const createPackage = (
 ) => {
   const exportName = exportType === ExportType.INTERFACES ? '-interfaces' : '';
   // Empty export destination directory
-  const destinationDir = `export/${packageName}${exportName}`;
+  const packageFullName = `${packageName}${exportName}`;
+  const destinationDir = `export/${packageFullName}`;
   fse.emptyDirSync(destinationDir);
 
   console.log('Installing dependencies');
@@ -26,7 +27,7 @@ export const createPackage = (
   if (!inputPackageJson) throw new Error('package.json not found');
   // Create custom package.json in the export directory
   const packageJson: PackageJson = {
-    name: packageName,
+    name: packageFullName,
     version: inputPackageJson.version,
     dependencies: {
       ...inputPackageJson.dependencies,
