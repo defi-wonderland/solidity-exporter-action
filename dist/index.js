@@ -93,7 +93,7 @@ const createPackage = (outDir, interfacesDir, contractsDir, librariesDir, packag
     fs_extra_1.default.writeJsonSync(`${destinationDir}/package.json`, packageJson, { spaces: 4 });
     // Copy the interfaces and their ABIs
     (0, copySolidityFiles_1.copySolidityFiles)(outDir, interfacesDir, destinationDir);
-    // Copy the contracts and libraries only if the export type is contracts
+    // Copy the contracts and libraries only if the export type is all
     if (exportType === constants_1.ExportType.ALL) {
         (contractsDir != '') && (0, copySolidityFiles_1.copySolidityFiles)(outDir, contractsDir, destinationDir);
         (librariesDir != '') && (0, copySolidityFiles_1.copySolidityFiles)(outDir, librariesDir, destinationDir);

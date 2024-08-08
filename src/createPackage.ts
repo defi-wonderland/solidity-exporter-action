@@ -36,7 +36,7 @@ export const createPackage = (
   // Copy the interfaces and their ABIs
   copySolidityFiles(outDir, interfacesDir, destinationDir);
 
-  // Copy the contracts and libraries only if the export type is contracts
+  // Copy the contracts and libraries only if the export type is all
   if (exportType === ExportType.ALL) {
     (contractsDir != '') && copySolidityFiles(outDir, contractsDir, destinationDir);
     (librariesDir != '') && copySolidityFiles(outDir, librariesDir, destinationDir);
