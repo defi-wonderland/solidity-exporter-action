@@ -86,21 +86,13 @@ jobs:
 Install the dependencies
 
 ```bash
-// Using yarn
 yarn
-
-// Using npm
-npm install
 ```
 
 Run the tests
 
 ```bash
-// Using yarn
 yarn test
-
-// Using npm
-npm test
 ```
 
 # License
