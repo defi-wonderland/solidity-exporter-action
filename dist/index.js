@@ -302,7 +302,7 @@ const transformRemappings = (file) => {
             const remappingDestination = remapping[1];
             line = line.replace(remappingOrigin, remappingDestination);
         }
-        line = line.replace(/'.*node_modules\//, `'`);
+        line = line.replace(/(['""]).*node_modules\//, `$1`);
         return line;
     })
         .join('\n');

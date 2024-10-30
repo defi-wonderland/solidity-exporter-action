@@ -31,13 +31,13 @@ export const transformRemappings = (file: string): string => {
 
       const remapping = remappings.find(([find]) => line.match(find));
 
-      if(remapping) {
+      if (remapping) {
         const remappingOrigin = remapping[0];
         const remappingDestination = remapping[1];
         line = line.replace(remappingOrigin, remappingDestination);
       }
 
-      line = line.replace(/'.*node_modules\//, `'`);
+      line = line.replace(/(['""]).*node_modules\//, `$1`);
 
       return line;
     })
