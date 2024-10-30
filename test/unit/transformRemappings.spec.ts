@@ -8,32 +8,46 @@ describe('transformRemappings', () => {
       'remappings.txt': 'interfaces=../../interfaces',
     });
   });
-
   after(() => {
     mock.restore();
   });
 
-  it('should transform imports with remappings', () => {
-    const fileContent = `
-        import '../../../interfaces/ITest.sol';
-        import './someFile.sol';
-      `;
+  describe('with remapping for path inside node_modules', function () {
+    before(() => {
+      mock({
+        'remappings.txt': `
+interfaces=../../interfaces
+solmate/=node_modules/solmate/src
 
-    const transformedContent = transformRemappings(fileContent);
+`,
+      });
+    });
+    it('should transform imports with remappings', () => {
+      const fileContent = `
+                                  import '../../../interfaces/ITest.sol';
+                                  import './someFile.sol';
+                                  import {FixedPointMathLib} from 'solmate/utils/FixedPointMathLib.sol'
+                                `;
 
-    expect(transformedContent).to.include(`import '../../../../../interfaces/ITest.sol';`);
-    expect(transformedContent).to.include(`import './someFile.sol';`);
+      const transformedContent = transformRemappings(fileContent);
+
+      expect(transformedContent).to.include(`import '../../../../../interfaces/ITest.sol';`);
+      expect(transformedContent).to.include(`import './someFile.sol';`);
+      expect(transformedContent).to.include(`import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol'`);
+    });
   });
 
   it('should handle imports from node_modules correctly', () => {
     const fileContent = `
       import '../../../node_modules/some-package/Contract.sol';
       import 'node_modules/another-package/Token.sol';
+      import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol'
     `;
 
     const transformedContent = transformRemappings(fileContent);
 
     expect(transformedContent).to.include(`import 'some-package/Contract.sol';`);
     expect(transformedContent).to.include(`import 'another-package/Token.sol';`);
+    expect(transformedContent).to.include(`import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol'`);
   });
 });
