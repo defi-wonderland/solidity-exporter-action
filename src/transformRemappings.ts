@@ -37,7 +37,11 @@ export const transformRemappings = (file: string): string => {
         line = line.replace(remappingOrigin, remappingDestination);
       }
 
-      line = line.replace(/(['""]).*node_modules\//, `$1`);
+      if (line.includes('node_modules')) {
+        line = line.replace(/(['""]).*node_modules\//, `$1`);
+      } else if (line.includes('lib')) {
+        line = line.replace(/(['""]).*lib\//, `$1`);
+      }
 
       return line;
     })
