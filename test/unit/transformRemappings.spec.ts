@@ -5,7 +5,7 @@ import mock from 'mock-fs';
 describe('transformRemappings', () => {
   before(() => {
     mock({
-      'remappings.txt': '',
+        'remappings.txt': 'foo=bar',
     });
   });
   after(() => {
@@ -98,6 +98,7 @@ describe('transformRemappings', () => {
       import './Contract.sol';
       import '../contracts/Contract.sol';
       import {Contract} from "../contracts/Contract.sol";
+      import "foo/Foo.sol";
       import {Contract as MyName} from'../contracts/Contract.sol';
       import * as MyName from'../contracts/Contract.sol';
     `;
@@ -107,6 +108,7 @@ describe('transformRemappings', () => {
     expect(transformedContent).to.include(`import './Contract.sol';`);
     expect(transformedContent).to.include(`import '../contracts/Contract.sol';`);
     expect(transformedContent).to.include(`import {Contract} from "../contracts/Contract.sol";`);
+    expect(transformedContent).to.include(`import "bar/Foo.sol";`);
     expect(transformedContent).to.include(`import {Contract as MyName} from'../contracts/Contract.sol';`);
     expect(transformedContent).to.include(`import * as MyName from'../contracts/Contract.sol';`);
   });
