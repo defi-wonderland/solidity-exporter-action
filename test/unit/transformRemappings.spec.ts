@@ -5,7 +5,7 @@ import mock from 'mock-fs';
 describe('transformRemappings', () => {
   before(() => {
     mock({
-        'remappings.txt': 'foo=bar',
+      'remappings.txt': 'foo=bar',
     });
   });
   after(() => {
@@ -59,9 +59,15 @@ describe('transformRemappings', () => {
 
       expect(transformedContent).to.include(`import 'some-package/Contract.sol';`);
       expect(transformedContent).to.include(`import 'another-package/Token.sol';`);
-      expect(transformedContent).to.include(`import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol';`);
-      expect(transformedContent).to.include(`import {FixedPointMathLib} from "solmate/src/utils/FixedPointMathLib.sol";`);
-      expect(transformedContent).to.include(`import {FixedPointMathLib as FPL} from "solmate/src/utils/FixedPointMathLib.sol";`);
+      expect(transformedContent).to.include(
+        `import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol';`,
+      );
+      expect(transformedContent).to.include(
+        `import {FixedPointMathLib} from "solmate/src/utils/FixedPointMathLib.sol";`,
+      );
+      expect(transformedContent).to.include(
+        `import {FixedPointMathLib as FPL} from "solmate/src/utils/FixedPointMathLib.sol";`,
+      );
       expect(transformedContent).to.include(`import * as FPL from "solmate/src/utils/FixedPointMathLib.sol";`);
     });
   });
@@ -85,10 +91,14 @@ describe('transformRemappings', () => {
 
       const transformedContent = transformRemappings(fileContent);
 
-      expect(transformedContent).to.include(`import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol';`);
+      expect(transformedContent).to.include(
+        `import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol';`,
+      );
       expect(transformedContent).to.include(`import 'solmate/src/utils/FixedPointMathLib.sol';`);
       expect(transformedContent).to.include(`import "solmate/src/utils/FixedPointMathLib.sol";`);
-      expect(transformedContent).to.include(`import {FixedPointMathLib as FPL} from 'solmate/src/utils/FixedPointMathLib.sol';`);
+      expect(transformedContent).to.include(
+        `import {FixedPointMathLib as FPL} from 'solmate/src/utils/FixedPointMathLib.sol';`,
+      );
       expect(transformedContent).to.include(`import * as FPL from "solmate/src/utils/FixedPointMathLib.sol";`);
     });
   });
@@ -128,17 +138,17 @@ describe('transformRemappings', () => {
   });
 
   it.skip('should not have false positives choosing imports', () => {
-
-      const fileContent = `
+    const fileContent = `
       /*  
       import '../../../node_modules/some-package/Contract.sol';
       */
     `;
 
-      const transformedContent = transformRemappings(fileContent);
+    const transformedContent = transformRemappings(fileContent);
 
-      expect(transformedContent).not.to.include(`import 'some-package/Contract.sol';`);
-      expect(transformedContent).to.include(`import '../../../node_modules/some-package/Contract.sol';`);
+    expect(transformedContent).not.to.include(`import 'some-package/Contract.sol';`);
+    expect(transformedContent).to.include(`import '../../../node_modules/some-package/Contract.sol';`);
+  });
 
   it.skip('should process two imports present in a single line', () => {
     const fileContent = `
