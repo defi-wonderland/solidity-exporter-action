@@ -139,5 +139,32 @@ describe('transformRemappings', () => {
 
       expect(transformedContent).not.to.include(`import 'some-package/Contract.sol';`);
       expect(transformedContent).to.include(`import '../../../node_modules/some-package/Contract.sol';`);
+
+  it.skip('should process two imports present in a single line', () => {
+    const fileContent = `
+      import 'foo/Foo.sol'; import 'foo/Bar.sol';
+    `;
+
+    const transformedContent = transformRemappings(fileContent);
+    expect(transformedContent).to.include(`import 'bar/Foo.sol'; import 'bar/Bar.sol';`);
+  });
+
+  it.skip('should process a multi-line import', () => {
+    const fileContent = `
+        import {
+          Foo,
+          Bar,
+          Baz
+        } from 'foo/Foo.sol';
+    `;
+
+    const transformedContent = transformRemappings(fileContent);
+    expect(transformedContent).to.include(`
+        import {
+          Foo,
+          Bar,
+          Baz
+        } from 'bar/Foo.sol';
+    `);
   });
 });
