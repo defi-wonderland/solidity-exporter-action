@@ -341,7 +341,7 @@ const transformRemappings = (file) => {
             const remappingDestination = remapping[1];
             line = line.replace(remappingOrigin, remappingDestination);
         }
-        line = line.replace(/(['""]).*node_modules\//, `$1`);
+        line = line.replace(/(['""]).*(?:node_modules|lib)\//, `$1`);
         return line;
     })
         .join('\n');
