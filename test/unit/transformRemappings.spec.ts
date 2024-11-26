@@ -11,38 +11,50 @@ describe('transformRemappings', () => {
   after(() => {
     mock.restore();
   });
+
   describe('with remapping for local file only', function () {
     before(function () {
       mock({
         'remappings.txt': 'interfaces=../../interfaces',
       });
     });
+
+    // Foundry produces a warning when doing this, but compiles the project doing
+    // the substitution regardless. We do the same to be compatible, but foundry's
+    // behaviour might change in the future.
+    it('should replace remapped path if its not at the beggining of string', function() { 
+      const fileContent = `import '../../interfaces/ITest.sol';`
+      const transformedContent = transformRemappings(fileContent);
+
+      expect(transformedContent).to.include(`import '../../../../interfaces/ITest.sol';`);
+    })
+
     it('should replace path as instructed by remapping with all import syntaxes', function () {
       const fileContent = `
-                                  import '../../../interfaces/ITest.sol';
-                                  import {ITest} from '../../../interfaces/ITest.sol';
-                                  import {ITest, ITest2} from '../../../interfaces/ITest.sol';
-                                  import {IBar as IFoo, ITest} from '../../../interfaces/ITest.sol';
-                                  import * as Interfaces '../../../interfaces/ITest.sol';
-                                  import "../../../interfaces/ITest.sol";
-                                  import {ITest} from "../../../interfaces/ITest.sol";
-                                  import {ITest, ITest2} from "../../../interfaces/ITest.sol";
-                                  import {IBar as IFoo, ITest} from "../../../interfaces/ITest.sol";
-                                  import * as Interfaces "../../../interfaces/ITest.sol";
+                                  import 'interfaces/ITest.sol';
+                                  import {ITest} from 'interfaces/ITest.sol';
+                                  import {ITest, ITest2} from 'interfaces/ITest.sol';
+                                  import {IBar as IFoo, ITest} from 'interfaces/ITest.sol';
+                                  import * as Interfaces 'interfaces/ITest.sol';
+                                  import "interfaces/ITest.sol";
+                                  import {ITest} from "interfaces/ITest.sol";
+                                  import {ITest, ITest2} from "interfaces/ITest.sol";
+                                  import {IBar as IFoo, ITest} from "interfaces/ITest.sol";
+                                  import * as Interfaces "interfaces/ITest.sol";
                                 `;
 
       const transformedContent = transformRemappings(fileContent);
 
-      expect(transformedContent).to.include(`import '../../../../../interfaces/ITest.sol';`);
-      expect(transformedContent).to.include(`import {ITest} from '../../../../../interfaces/ITest.sol';`);
-      expect(transformedContent).to.include(`import {ITest, ITest2} from '../../../../../interfaces/ITest.sol';`);
-      expect(transformedContent).to.include(`import {IBar as IFoo, ITest} from '../../../../../interfaces/ITest.sol';`);
-      expect(transformedContent).to.include(`import * as Interfaces '../../../../../interfaces/ITest.sol';`);
-      expect(transformedContent).to.include(`import "../../../../../interfaces/ITest.sol";`);
-      expect(transformedContent).to.include(`import {ITest} from "../../../../../interfaces/ITest.sol";`);
-      expect(transformedContent).to.include(`import {ITest, ITest2} from "../../../../../interfaces/ITest.sol";`);
-      expect(transformedContent).to.include(`import {IBar as IFoo, ITest} from "../../../../../interfaces/ITest.sol";`);
-      expect(transformedContent).to.include(`import * as Interfaces "../../../../../interfaces/ITest.sol";`);
+      expect(transformedContent).to.include(`import '../../interfaces/ITest.sol';`);
+      expect(transformedContent).to.include(`import {ITest} from '../../interfaces/ITest.sol';`);
+      expect(transformedContent).to.include(`import {ITest, ITest2} from '../../interfaces/ITest.sol';`);
+      expect(transformedContent).to.include(`import {IBar as IFoo, ITest} from '../../interfaces/ITest.sol';`);
+      expect(transformedContent).to.include(`import * as Interfaces '../../interfaces/ITest.sol';`);
+      expect(transformedContent).to.include(`import "../../interfaces/ITest.sol";`);
+      expect(transformedContent).to.include(`import {ITest} from "../../interfaces/ITest.sol";`);
+      expect(transformedContent).to.include(`import {ITest, ITest2} from "../../interfaces/ITest.sol";`);
+      expect(transformedContent).to.include(`import {IBar as IFoo, ITest} from "../../interfaces/ITest.sol";`);
+      expect(transformedContent).to.include(`import * as Interfaces "../../interfaces/ITest.sol";`);
     });
 
     it('should remove node_modules from import paths', function () {
