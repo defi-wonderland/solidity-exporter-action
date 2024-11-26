@@ -10,11 +10,6 @@ describe('parseGitmodulesDependencies', () => {
     mock.restore();
   });
   describe('with no gitmodules file', function () {
-    before(() => {
-      mock({
-        '.gitmodules': '',
-      });
-    });
     it('should return an empty dependency list', function () {
       const parsedDependencies = parseGitmodulesDependencies();
       expect(parsedDependencies).to.deep.eq({});
