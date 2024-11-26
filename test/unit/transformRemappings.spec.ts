@@ -137,6 +137,7 @@ describe('transformRemappings', () => {
     expect(transformedContent).to.include(`contract C {}`);
   });
 
+  // see https://github.com/defi-wonderland/solidity-exporter-action/issues/62 for tracking and details
   it.skip('should not have false positives choosing imports', () => {
     const fileContent = `
       /*  
@@ -150,6 +151,7 @@ describe('transformRemappings', () => {
     expect(transformedContent).to.include(`import '../../../node_modules/some-package/Contract.sol';`);
   });
 
+  // see https://github.com/defi-wonderland/solidity-exporter-action/issues/62 for tracking and details
   it.skip('should process two imports present in a single line', () => {
     const fileContent = `
       import 'foo/Foo.sol'; import 'foo/Bar.sol';
@@ -159,6 +161,7 @@ describe('transformRemappings', () => {
     expect(transformedContent).to.include(`import 'bar/Foo.sol'; import 'bar/Bar.sol';`);
   });
 
+  // see https://github.com/defi-wonderland/solidity-exporter-action/issues/62 for tracking and details
   it.skip('should process a multi-line import', () => {
     const fileContent = `
         import {
