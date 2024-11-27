@@ -297,24 +297,12 @@ const transformRemappings = (file) => {
         if (!line.match(/^\s*import /i))
             return line;
         const remapping = remappings.find(([find]) => line.match(find));
-        if (!remapping) {
-            // Transform:
-            // import '../../../node_modules/some-file.sol';
-            // into:
-            // import 'some-file.sol';
-            const modulesKey = 'node_modules/';
-            if (line.includes(modulesKey)) {
-                line = `import '` + line.substring(line.indexOf(modulesKey) + modulesKey.length);
-            }
-            else {
-                return line;
-            }
-            return line;
+        if (remapping) {
+            const remappingOrigin = remapping[0];
+            const remappingDestination = remapping[1];
+            line = line.replace(remappingOrigin, remappingDestination);
         }
-        const remappingOrigin = remapping[0];
-        const remappingDestination = remapping[1];
-        const dependencyDirectory = line.replace(remappingOrigin, remappingDestination);
-        line = `import '` + dependencyDirectory;
+        line = line.replace(/(['""]).*node_modules\//, `$1`);
         return line;
     })
         .join('\n');

@@ -110,3 +110,7 @@ The scripts and documentation in this project are released under the [MIT Licens
 # Contributors
 
 Maintained with love by [Wonderland](https://defi.sucks). Made possible by viewers like you.
+
+# Known issues
+
+This project relies on regular expressions to locate import statements, which is sub-optimal and has known false positives and negatives. See issue #62 for details and progress on migrating to using a proper parser
