@@ -102,4 +102,28 @@ describe('parseGitmodulesDependencies', () => {
       expect(Object.keys(parsedDependencies)).to.have.length(2);
     });
   });
+
+  describe('with a file urls come before paths', function () {
+    before(() => {
+      // this is valid syntax according to git, but our regex 'parser' can't handle it
+      mock({
+        '.gitmodules': `
+      [submodule "lib/openzeppelin-contracts"]
+        url = https://github.com/OpenZeppelin/openzeppelin-contracts
+        path = lib/openzeppelin-contracts
+      [submodule "lib/forge-std"]
+        url = https://github.com/foundry-rs/forge-std
+        path = lib/forge-std
+      `,
+      });
+    });
+    it.skip('should be able to parse them', function () {
+      const parsedDependencies = parseGitmodulesDependencies();
+      expect(parsedDependencies['forge-std']).to.eq('https://github.com/foundry-rs/forge-std');
+      expect(parsedDependencies['openzeppelin-contracts']).to.eq(
+        'https://github.com/OpenZeppelin/openzeppelin-contracts',
+      );
+      expect(Object.keys(parsedDependencies)).to.have.length(2);
+    });
+  });
 });
