@@ -115,6 +115,37 @@ describe('transformRemappings', () => {
     });
   });
 
+  describe('with remapping for path inside lib/', function () {
+    before(() => {
+      mock({
+        'remappings.txt': `
+          solmate/=lib/solmate/src/`,
+      });
+    });
+
+    it('should apply remapping and then remove lib from path', () => {
+      const fileContent = `
+                                  import {FixedPointMathLib} from 'solmate/utils/FixedPointMathLib.sol';
+                                  import 'solmate/utils/FixedPointMathLib.sol';
+                                  import "solmate/utils/FixedPointMathLib.sol";
+                                  import {FixedPointMathLib as FPL} from 'solmate/utils/FixedPointMathLib.sol';
+                                  import * as FPL from "solmate/utils/FixedPointMathLib.sol";
+                                `;
+
+      const transformedContent = transformRemappings(fileContent);
+
+      expect(transformedContent).to.include(
+        `import {FixedPointMathLib} from 'solmate/src/utils/FixedPointMathLib.sol';`,
+      );
+      expect(transformedContent).to.include(`import 'solmate/src/utils/FixedPointMathLib.sol';`);
+      expect(transformedContent).to.include(`import "solmate/src/utils/FixedPointMathLib.sol";`);
+      expect(transformedContent).to.include(
+        `import {FixedPointMathLib as FPL} from 'solmate/src/utils/FixedPointMathLib.sol';`,
+      );
+      expect(transformedContent).to.include(`import * as FPL from "solmate/src/utils/FixedPointMathLib.sol";`);
+    });
+  });
+
   it('should leave unrelated imports alone', () => {
     const fileContent = `
       import './Contract.sol';

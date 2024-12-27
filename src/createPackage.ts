@@ -3,6 +3,7 @@ import { execSync } from 'child_process';
 import { copySolidityFiles } from './copySolidityFiles';
 import { PackageJson } from './types';
 import { createReadmeAndLicense } from './createReadmeAndLicense';
+import { parseGitmodulesDependencies } from './parseGitmodulesDependencies';
 import { ExportType } from './constants';
 
 export const createPackage = (
@@ -25,12 +26,14 @@ export const createPackage = (
   // Read and copy the input package.json
   const inputPackageJson = fse.readJsonSync('./package.json');
   if (!inputPackageJson) throw new Error('package.json not found');
+  const gitDependencies = parseGitmodulesDependencies();
   // Create custom package.json in the export directory
   const packageJson: PackageJson = {
     name: packageFullName,
     version: inputPackageJson.version,
     dependencies: {
       ...inputPackageJson.dependencies,
+      ...gitDependencies,
     },
   };
   fse.writeJsonSync(`${destinationDir}/package.json`, packageJson, { spaces: 4 });
